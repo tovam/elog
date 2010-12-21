@@ -1,0 +1,56 @@
+** this is the overview.doc file for the application 'elog' **
+@author Fernando Benavides <greenmellon@gmail.com>
+@copyright 2010 Fernando Benavides <greenmellon@gmail.com>
+@version 1.0
+@reference Check the project on <a href="https://github.com/elbrujohalcon/elog">Github</a>
+@title Yet another logging library for Erlang
+@doc
+== Overview ==
+<b>elog</b> is very basic logging library for Erlang.  Its main advantage is its low foot-print.
+It was tested on a very log-intensive application running on a server with 128K concurrent clients and it worked smoothly.
+== Usage ==
+<ol>
+    <li>First you should include <pre>"elog.hrl"</pre> in each module you wish to
+        log from</li>
+    <li>To log something, just use <b>?LEVEL(Str, Args)</b> macros on your code.
+        The available levels are:
+        <ul>
+            <li><b>DEBUG</b></li>
+            <li><b>INFO</b></li>
+            <li><b>STAT</b></li>
+            <li><b>WARN</b></li>
+            <li><b>ERROR</b></li>
+            <li><b>THROW</b> (Which behaves like <b>ERROR</b> but throws and
+                              catches an ad-hoc exception to let you see the
+                              <emph>real</emph> stack trace when you're out
+                              of an exception catch block)</li>
+            <li><b>FATAL</b></li>
+        </ul></li>
+    <li>You can use <b>no_LEVEL</b> macros to avoid the log calls of level <b>LEVEL</b> when compiling</li>
+    <li>You can use <b>no_log</b> to compile your code with no log at all</li>
+    <li>To start logging, start the app (i.e. <pre>elog:start().</pre> or <pre>application:start(elog).</pre></li>
+    <li>To decide what to log by default you can set the <i>log_level</i> environment variable for the app</li>
+    <li>If you want to log to a file instead of the console, just set the <i>log_file</i> environment variable with the file name</li>
+</ol>
+
+== Good News ==
+We've added a couple of convenient functions to let our users log <i>better</i>.
+We list them here, check the rest of the documentation for them
+<ul>
+    <li>You can set the log level for a particular module</li>
+    <li>You can set the log level for a particular regular expression</li>
+    <li>You can trap error_logger messages</li>
+    <li>You can even replace error_logger default handlers</li>
+</ul>
+
+== Bad News ==
+There're many many things missing for this project to became a <b>really</b> logging subsystem.  For instance...
+<ul>
+    <li>Logging to a file is almost a HACK, not really well designed</li>
+    <li>When you decide to set the log level for a module, every other module
+        compiled with that level on will start sending messages to the logger.
+        The logger will ignore them anyway, but if you're concern about the
+        amount of messages sent through the system you should use this feature
+        with extra care</li>
+    <li>The logging format is hardcoded</li>
+</ul>

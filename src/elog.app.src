@@ -1,0 +1,13 @@
+{application, elog,
+ [
+  {description, "Yet another logging library for Erlang"},
+  {vsn, "1.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  crypto
+                 ]},
+  {mod, {elog_app, []}},
+	{env, []}
+ ]}.
