@@ -44,5 +44,6 @@ end
 task :doc do
   sh "mkdir -p doc/html"
   sh "cp src/overview.edoc doc/html"
-  sh 'erl -noshell -eval "edoc:files(filelib:wildcard(\"src/*.erl\"), [{dir, \"doc/html\"}, {includes, [\"include\"]}, {source_path, [\"include\", \"src\"]}])" -s init stop'
+  sh 'erl -noshell -eval "edoc:files([\"src/elog.erl\"], [{dir, \"doc/html\"}, {includes, [\"include\"]}, {source_path, [\"include\", \"src\"]}])" -s init stop'
+  sh "cd doc/html && git add . && git commit -m 'New doc version' && git push"
 end

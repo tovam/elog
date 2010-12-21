@@ -9,6 +9,9 @@
 
 -behaviour(supervisor).
 
+-type startlink_err() :: {'already_started', pid()} | 'shutdown' | term().
+-type startlink_ret() :: {'ok', pid()} | 'ignore' | {'error', startlink_err()}.
+
 %% API
 -export([start_link/0, reload/0]).
 
@@ -21,11 +24,12 @@
 %% ===================================================================
 %% API functions
 %% ===================================================================
-
--spec start_link() -> {ok, pid()}.
+%% @hidden
+-spec start_link() -> startlink_ret().
 start_link() ->
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
+%% @hidden
 -spec reload() -> ok.
 reload() ->
   ok = lists:foreach(fun({ChildId, _, _, _}) ->
@@ -40,6 +44,7 @@ reload() ->
 %% ===================================================================
 %% Supervisor callbacks
 %% ===================================================================
+%% @hidden
 -spec init([]) -> {ok, {{one_for_one, 5, 10}, [supervisor:child_spec()]}}.
 init([]) ->
   Children =

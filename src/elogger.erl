@@ -29,12 +29,12 @@
 %% API
 %%====================================================================
 
-%% hidden
+%% @hidden
 -spec start_link(loglevel()) -> ignore | {ok, pid()}.
 start_link(Level) ->
   start_link(Level, all).
 
-%% hidden
+%% @hidden
 -spec start_link(loglevel(), all|just_exceptions) -> ignore | {ok, pid()}.
 start_link(Level, What) ->
   SystemLevel =
@@ -52,12 +52,12 @@ start_link(Level, What) ->
       ignore
   end.
 
-%% hidden
+%% @hidden
 -spec add(loglevel(), atom()|string()) -> ok.
 add(Level, ModuleOrRegExp) ->
   gen_server:call(process_name(Level), {add, ModuleOrRegExp}).
 
-%% hidden
+%% @hidden
 -spec remove(loglevel(), atom()|string()) -> ok.
 remove(Level, ModuleOrRegExp) ->
   gen_server:call(process_name(Level), {remove, ModuleOrRegExp}).
@@ -65,7 +65,7 @@ remove(Level, ModuleOrRegExp) ->
 %%====================================================================
 %% gen_server callbacks
 %%====================================================================
-%% hidden
+%% @hidden
 -spec init(all | just_exceptions) -> {ok, state()}.
 init(What) ->
   LogFile =
@@ -75,7 +75,7 @@ init(What) ->
     end,
   {ok, #state{what= What, file = LogFile}}.
 
-%% hidden
+%% @hidden
 -spec handle_call({add, atom() | string()}, reference(), state()) -> {reply, ok, state()}.
 handle_call({add, _}, _From, State = #state{what = all}) ->
   {reply, ok, State};
@@ -87,7 +87,7 @@ handle_call({add, RegExpStr}, _From, State) ->
 handle_call(_Request, _From, State) ->
   {reply, ok, State}.
 
-%% hidden
+%% @hidden
 -spec handle_cast(#log{} | {remove, atom() | string()}, state()) -> {noreply, state()}.
 handle_cast({remove, Module}, State) when is_atom(Module) ->
   {noreply, State#state{modules = State#state.modules -- [Module]}};
@@ -117,17 +117,17 @@ handle_cast(_Msg, State) ->
   io:format("~p~n", [_Msg]),
   {noreply, State}.
 
-%% hidden
+%% @hidden
 -spec handle_info(term(), state()) -> {noreply, state()}.
 handle_info(Msg, State) ->
   error_logger:error_msg("Unexpected message: ~p~n", [Msg]),
   {noreply, State}.
 
-%% hidden
+%% @hidden
 -spec terminate(term(), state()) -> ok.
 terminate(_Reason, _State) -> ok.
 
-%% hidden
+%% @hidden
 -spec code_change(term(), state(), term()) -> {ok, state()}.
 code_change(_OldVersion, State, _Extra) -> {ok, State}.
 
