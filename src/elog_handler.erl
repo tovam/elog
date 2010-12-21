@@ -22,7 +22,7 @@
 %% External functions
 %% ====================================================================
 %% @doc  replaces the default tty error logger
-%% @spec replace_tty() -> ok.
+%% @spec replace_tty() -> ok
 -spec replace_tty() -> ok.
 replace_tty() ->
   case error_logger:delete_report_handler(error_logger) of

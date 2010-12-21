@@ -1,7 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% @doc Macros used to selectively send debugging information
-%%%-------------------------------------------------------------------
-
 %%NOTE: We do this because we want to step over other definitions of these macros
 -undef(LOG_LEVEL_DEBUG).
 -undef(LOG_LEVEL_INFO).
