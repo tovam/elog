@@ -1,2 +1,2 @@
 {packages,[]}.
-{modules,[elog,elog_app,elog_handler,elog_sup,elogger]}.
+{modules,[elog]}.
