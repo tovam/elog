@@ -11,7 +11,7 @@ end
 task :make_erl do
   print "Compiling Erlang sources..."
   sh "rebar get-deps && rebar compile"
-  sh "erl -pa ebin -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'"
+  sh "erl -pa deps/riak_err/ebin -pa ebin -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'"
   print " done\n"
 end
 
@@ -21,7 +21,7 @@ task :run, [:node, :config, :withsasl] do |t, args|
                      :config => Socket.gethostname)
   sasl = args.withsasl == "true" ? "-boot start_sasl" : ""
   configarg = File.exist?("#{args.config}.config") ? "-config #{args.config}" : ""
-  cmdline = "erl +W w #{configarg} -name #{args.node} #{sasl} -setcookie dns -pa ebin -s crypto -s inets +Bc +K true -smp enable -run elog start"
+  cmdline = "erl +W w #{configarg} -name #{args.node} #{sasl} -setcookie dns -pa deps/riak_err/ebin -pa ebin -s crypto -s inets +Bc +K true -smp enable -run elog start"
   puts cmdline
   sh cmdline
 end
@@ -46,4 +46,8 @@ task :doc do
   sh "cp src/overview.edoc doc/html"
   sh 'erl -noshell -eval "edoc:files([\"src/elog.erl\"], [{dir, \"doc/html\"}, {includes, [\"include\"]}, {source_path, [\"include\", \"src\"]}])" -s init stop'
   sh "cd doc/html && git add . && git commit -m 'New doc version' && git push"
+end
+
+task :xref do
+  sh "rebar xref"
 end
