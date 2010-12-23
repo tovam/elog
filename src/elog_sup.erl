@@ -49,6 +49,6 @@ reload() ->
 init([]) ->
   Children =
     [{LogLevel, {elogger, start_link, [LogLevel]},
-      transient, brutal_kill, worker, [italkdb_db]} || LogLevel <- ?LOG_LEVELS],
+      transient, brutal_kill, worker, [elogger]} || LogLevel <- ?LOG_LEVELS],
   error_logger:info_msg("Inititalizing elog supervisor...~n"),
   {ok, {{one_for_one, 5, 10}, Children}}.
