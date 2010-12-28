@@ -51,7 +51,7 @@ level(Level, ModuleOrRegExp) ->
                     end,
                     reached;
                   _ ->
-                    elogger:remove(L, ModuleOrRegExp),
+                    catch elogger:remove(L, ModuleOrRegExp),
                     not_reached
                 end
         end, not_reached, ?LOG_LEVELS),
