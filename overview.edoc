@@ -6,7 +6,7 @@
 @title Yet another logging library for Erlang
 @doc
 == Overview ==
-<b>elog</b> is very basic logging library for Erlang.  Its main advantage is its low foot-print.
+<b>elog</b> is very basic logging library for Erlang. Its main advantage is its low foot-print.
 It was tested on a very log-intensive application running on a server with 128K concurrent clients and it worked smoothly.
 == Usage ==
 <ol>
@@ -44,7 +44,7 @@ We list them here, check the rest of the documentation for them
 </ul>
 
 == Bad News ==
-There're many many things missing for this project to became a <b>really</b> logging subsystem.  For instance...
+There're many many things missing for this project to became a <b>really</b> logging subsystem. For instance...
 <ul>
     <li>Logging to a file is almost a HACK, not really well designed</li>
     <li>When you decide to set the log level for a module, every other module
