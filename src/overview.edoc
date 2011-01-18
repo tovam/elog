@@ -44,7 +44,7 @@ We list them here, check the rest of the documentation for them
 </ul>
 
 == Bad News ==
-There're many many things missing for this project to became a <b>really</b> logging subsystem.  For instance...
+There're many many things missing for this project to became a <b>really</b> logging subsystem. For instance...
 <ul>
     <li>Logging to a file is almost a HACK, not really well designed</li>
     <li>When you decide to set the log level for a module, every other module
