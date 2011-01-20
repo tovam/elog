@@ -49,7 +49,15 @@ start_link(Level, What) ->
         {error, {already_started, Pid}} -> {ok, Pid}
       end;
     _ ->
-      ignore
+      case What of
+        just_exceptions ->
+          case gen_server:start_link({local, process_name(Level)}, ?MODULE, What, []) of
+            {ok, Pid} -> {ok, Pid};
+            {error, {already_started, Pid}} -> {ok, Pid}
+          end;
+        _ ->
+          ignore
+      end
   end.
 
 %% @hidden
