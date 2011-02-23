@@ -20,9 +20,6 @@ doc: all
 xref: all
 	rebar skip_deps=true xref
 	
-test: all
-	if [ -f test.config ]; then erl -noshell -config test -pa ebin -pa deps/riak_err/ebin -pa deps/ibrowse/ebin +Bc +K true -smp enable -s crypto -s ibrowse -run itweep_tests main; else erl -noshell -pa ebin -pa deps/riak_err/ebin -pa deps/ibrowse/ebin +Bc +K true -smp enable -s crypto -s ibrowse -run itweep_tests main; fi
-
 run: all
 	if [ -f `hostname`.config ]; then\
 		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -setcookie elog -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
