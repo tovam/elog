@@ -22,17 +22,21 @@ xref: all
 	
 run: all
 	if [ -f `hostname`.config ]; then\
-		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
+		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s ssl -s elog;\
 	else\
-		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
+		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s ssl -s elog;\
 	fi
 
 shell: all
 	if [ -f `hostname`.config ]; then\
-		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets;\
+		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s ssl;\
 	else\
-		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets;\
+		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s ssl;\
 	fi
 
 test: all
-	erl -noshell -noinput +Bc +K true -smp enable -name elog -pa ebin -s crypto -s inets -s elog -run elog_tester main
+	if [ -f `hostname`.config ]; then\
+		erl -noshell -noinput +Bc +K true -smp enable -config `hostname` -name elog -pa ebin -s crypto -s inets -s ssl -s elog -run elog_tester main;\
+	else\
+		erl -noshell -noinput +Bc +K true -smp enable -name elog -pa ebin -s crypto -s inets -s ssl -s elog -run elog_tester main;\
+	fi

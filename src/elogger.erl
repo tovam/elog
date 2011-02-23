@@ -118,12 +118,12 @@ start_link(Level, What, Mod, InitArgs) ->
 %% @hidden
 -spec add(loglevel(), atom()|string()) -> ok.
 add(Level, ModuleOrRegExp) ->
-  gen_server:call(process_name(Level), {add, ModuleOrRegExp}).
+  gen_server:call(process_name(Level), {add, ModuleOrRegExp}, infinity).
 
 %% @hidden
 -spec remove(loglevel(), atom()|string()) -> ok.
 remove(Level, ModuleOrRegExp) ->
-  gen_server:call(process_name(Level), {remove, ModuleOrRegExp}).
+  gen_server:call(process_name(Level), {remove, ModuleOrRegExp}, infinity).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GEN SERVER CALLBACKS
