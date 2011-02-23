@@ -1,7 +1,7 @@
 %%%-------------------------------------------------------------------
 %%% @hidden
 %%% @author Fernando Benavides <greenmellon@gmail.com>
-%%% @copyright (C) 2010 Fernando Benavides <greenmellon@gmail.com>
+%%% @copyright (C) 2011 Fernando Benavides <greenmellon@gmail.com>
 %%% @doc elog main supervisor
 %%% @end
 %%%-------------------------------------------------------------------
@@ -14,7 +14,7 @@
 -type startlink_ret() :: {'ok', pid()} | 'ignore' | {'error', startlink_err()}.
 
 %% API
--export([start_link/0, reload/0]).
+-export([start_link/0, reload/0, add_exception/1]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -29,6 +29,20 @@
 -spec start_link() -> startlink_ret().
 start_link() ->
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+%% @hidden
+-spec add_exception(loglevel()) -> startlink_ret().
+add_exception(Level) ->
+  Name = list_to_atom("exc-" ++ atom_to_list(Level)),
+  ChildSpec =
+    {Name, {elogger, start_link, [Level, just_exceptions]},
+     transient, brutal_kill, worker, [elogger]},
+  case supervisor:start_child(?MODULE, ChildSpec) of
+    {error, already_present} ->
+      supervisor:restart_child(?MODULE, Name);
+    Other ->
+      Other
+  end.
 
 %% @hidden
 -spec reload() -> ok.

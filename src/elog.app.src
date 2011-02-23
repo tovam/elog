@@ -10,5 +10,8 @@
                   crypto
                  ]},
   {mod, {elog, []}},
-	{env, []}
+  {env, [{level, info}, %% Global level
+         {logger, {elogger_file, ["logs/elog.log"]}}, %% Default logger
+         {warn, [{logger, {elogger_console, []}}]} %% Params just for warnings
+        ]}
  ]}.

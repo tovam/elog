@@ -22,10 +22,17 @@ xref: all
 	
 run: all
 	if [ -f `hostname`.config ]; then\
-		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -setcookie elog -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
+		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
 	else\
-		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -setcookie elog -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
+		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets -s elog;\
 	fi
 
 shell: all
-	erl -pa ebin -pa deps/riak_err/ebin -pa deps/ibrowse/ebin +Bc +K true -smp enable -boot start_sasl -s crypto -s ibrowse
+	if [ -f `hostname`.config ]; then\
+		erl  +Bc +K true +W w -smp enable -config `hostname` -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets;\
+	else\
+		erl  +Bc +K true +W w -smp enable -name elog -boot start_sasl -pa deps/riak_err/ebin -pa ebin -s crypto -s inets;\
+	fi
+
+test: all
+	erl -noshell -noinput +Bc +K true -smp enable -name elog -pa ebin -s crypto -s inets -s elog -run elog_tester main

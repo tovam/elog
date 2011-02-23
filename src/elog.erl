@@ -1,6 +1,6 @@
 %%%-------------------------------------------------------------------
 %%% @author Fernando Benavides <greenmellon@gmail.com>
-%%% @copyright (C) 2010 Fernando Benavides <greenmellon@gmail.com>
+%%% @copyright (C) 2011 Fernando Benavides <greenmellon@gmail.com>
 %%% @doc Yet another logging library for Erlang
 %%% @end
 %%%-------------------------------------------------------------------
@@ -12,10 +12,32 @@
 %% @headerfile "elog.hrl"
 -include("elog.hrl").
 
--export([start/0]).
--export([level/1, level/2]).
-%% Application callbacks
+%% API
+-export([start/0, level/1, level/2, get_env/1, get_env/2]).
+%% APPLICATION
 -export([start/2, stop/1]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% API FUNCTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% @doc  Returns global config values
+%%% @spec get_env(level | logger) -> term()
+-spec get_env(level | logger) -> term().
+get_env(Key) ->
+  case application:get_env(elog, Key) of
+    undefined -> get_env_default(Key);
+    {ok, Value} -> Value
+  end.
+
+%%% @doc  Returns a configuration parameter
+%%% @spec get_env(loglevel(), logger) -> term()
+-spec get_env(loglevel(), logger) -> term().
+get_env(Level, Key) ->
+  case application:get_env(elog, Level) of
+    undefined -> get_env(Key);
+    {ok, Values} -> proplists:get_value(Key, Values, get_env(Key))
+  end.
 
 %%% @doc  Starts the application
 %%% @spec start() -> ok
@@ -39,8 +61,7 @@ level(Level, ModuleOrRegExp) ->
                 try elogger:add(L, ModuleOrRegExp)
                 catch
                   _:{noproc, _} ->
-                    {ok, _Pid} =
-                      elogger:start_link(L, just_exceptions),
+                    {ok, _Pid} = elog_sup:add_exception(L),
                     elogger:add(L, ModuleOrRegExp)
                 end,
                 reached;
@@ -50,7 +71,7 @@ level(Level, ModuleOrRegExp) ->
                     try elogger:add(L, ModuleOrRegExp)
                     catch
                       _:{noproc, _} ->
-                        {ok, _Pid} = elogger:start_link(Level, just_exceptions),
+                        {ok, _Pid} = elog_sup:add_exception(L),
                         elogger:add(L, ModuleOrRegExp)
                     end,
                     reached;
@@ -61,9 +82,9 @@ level(Level, ModuleOrRegExp) ->
         end, not_reached, ?LOG_LEVELS),
   ok.
 
-%% ===================================================================
-%% Application callbacks
-%% ===================================================================
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% APPLICATION FUNCTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @hidden
 -spec start(normal | {takeover, node()} | {failover, node()}, term()) -> {ok, pid()} | {error, term()}.
 start(_StartType, _StartArgs) ->
@@ -72,3 +93,9 @@ start(_StartType, _StartArgs) ->
 %% @hidden
 -spec stop([]) -> ok.
 stop([]) -> ok.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PRIVATE FUNCTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+get_env_default(level) -> ?LOG_LEVEL_INFO;
+get_env_default(logger) -> {elogger_console, []}.
