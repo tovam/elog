@@ -11,7 +11,8 @@
                  ]},
   {mod, {elog, []}},
   {env, [{level, info}, %% Global level
-         {logger, {elogger_file, ["logs/elog.log"]}}, %% Default logger
-         {warn, [{logger, {elogger_console, []}}]} %% Params just for warnings
+         {logger, {elogger_console, []}}
+         %% {logger, {elogger_file, ["logs/elog.log"]}}, %% Default logger
+         %% {warn, [{logger, {elogger_console, []}}]} %% Params just for warnings
         ]}
  ]}.
