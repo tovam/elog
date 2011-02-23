@@ -1,4 +1,5 @@
 %%%-------------------------------------------------------------------
+%%% @hidden
 %%% @author Fernando Benavides <greenmellon@gmail.com>
 %%% @copyright (C) 2010 Fernando Benavides <greenmellon@gmail.com>
 %%% @doc elog error handler

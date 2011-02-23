@@ -7,11 +7,15 @@
 -module(elog).
 -author('Fernando Benavides <greenmellon@gmail.com>').
 
+-behaviour(application).
+
 %% @headerfile "elog.hrl"
 -include("elog.hrl").
 
 -export([start/0]).
 -export([level/1, level/2]).
+%% Application callbacks
+-export([start/2, stop/1]).
 
 %%% @doc  Starts the application
 %%% @spec start() -> ok
@@ -56,3 +60,15 @@ level(Level, ModuleOrRegExp) ->
                 end
         end, not_reached, ?LOG_LEVELS),
   ok.
+
+%% ===================================================================
+%% Application callbacks
+%% ===================================================================
+%% @hidden
+-spec start(normal | {takeover, node()} | {failover, node()}, term()) -> {ok, pid()} | {error, term()}.
+start(_StartType, _StartArgs) ->
+  elog_sup:start_link().
+
+%% @hidden
+-spec stop([]) -> ok.
+stop([]) -> ok.

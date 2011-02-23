@@ -9,6 +9,6 @@
                   inets,
                   crypto
                  ]},
-  {mod, {elog_app, []}},
+  {mod, {elog, []}},
 	{env, []}
  ]}.
