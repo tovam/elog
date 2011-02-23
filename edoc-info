@@ -1,2 +1,3 @@
+{application,elog}.
 {packages,[]}.
 {modules,[elog]}.
