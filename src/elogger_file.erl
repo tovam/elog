@@ -41,7 +41,7 @@ init(Props) ->
                  file       = File,
                  size_limit = proplists:get_value(size_limit, Props, infinity),
                  date_break = proplists:get_bool(date_break, Props)},
-  case filelib:ensure_dir(State#state.file) of
+  case filelib:ensure_dir(Filename) of
     ok ->
       {ok, State};
     {error, PosixError} ->
