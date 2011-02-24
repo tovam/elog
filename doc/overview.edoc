@@ -53,7 +53,7 @@ It was tested on a very log-intensive application running on a server with 128K 
     <dd>Specific configuration for <i>LEVEL</i>. Each log level may have its own configuration. The allowed options are:
       <dl>
         <dt><b>logger</b></dt>
-          <dd>Logger: {link @elogger} implementation to be used for this level</dd>
+          <dd>Logger: {@link elogger} implementation to be used for this level</dd>
       </dl>
     </dd>
 </dl>                                
