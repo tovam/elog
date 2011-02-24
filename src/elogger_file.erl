@@ -72,7 +72,7 @@ log(#log{time        = {_,{HH,Mm,SS}},
     end,
   {ok, Fd} = file:open(filename:absname(FileName), [write, append]),
   io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args]),
+            [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]),
   file:close(Fd),
   limit_check(FileName, Limit),
   {ok, State};
@@ -99,7 +99,7 @@ log(#log{time        = {_,{HH,Mm,SS}},
   {ok, Fd} = file:open(filename:absname(FileName), [write, append]),
   io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
               "~n\tStack Trace:~n\t\t~p~n",
-            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args] ++ [Stack]),
+            [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack]),
   limit_check(FileName, Limit),
   file:close(Fd),
   {ok, State}.
@@ -107,17 +107,6 @@ log(#log{time        = {_,{HH,Mm,SS}},
 %%% @hidden
 -spec terminate(normal | shutdown | term(), {}) -> ok.
 terminate(_Reason, _State) -> ok.
-
-fancy_node(SourceNode) ->
-  case {string:tokens(atom_to_list(SourceNode), "@"),
-        string:tokens(atom_to_list(node()), "@")} of
-    {X,X} ->
-      "";
-    {[X,Y], [_Z,Y]} ->
-      X;
-    _ ->
-      SourceNode
-  end.
 
 limit_check(_FileName, infinity) -> ok;
 limit_check(FileName, Limit) ->

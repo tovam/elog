@@ -67,7 +67,7 @@ log(#log{time        = {_,{HH,Mm,SS}},
                                            subject    = SubjectFormat}) ->
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
   Message = io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-                          [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args]),
+                          [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]),
   spawn(fun() -> send_message(Server, Source, Recipients, Subject, Message) end),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
@@ -85,24 +85,13 @@ log(#log{time        = {_,{HH,Mm,SS}},
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
   Message = io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
                             "~n\tStack Trace:~n\t\t~p~n",
-                          [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args] ++ [Stack]),
+                          [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack]),
   spawn(fun() -> send_message(Server, Source, Recipients, Subject, Message) end),
   {ok, State}.
 
 %%% @hidden
 -spec terminate(normal | shutdown | term(), {}) -> ok.
 terminate(_Reason, _State) -> ok.
-
-fancy_node(SourceNode) ->
-  case {string:tokens(atom_to_list(SourceNode), "@"),
-        string:tokens(atom_to_list(node()), "@")} of
-    {X,X} ->
-      "";
-    {[X,Y], [_Z,Y]} ->
-      X;
-    _ ->
-      SourceNode
-  end.
 
 send_message(_Server, _Source, [], _Subject, _Message) -> ok;
 send_message({Host, Port}, {SrcName, SrcAddr, SrcPwd}, Recipients, Subject, Message) ->
