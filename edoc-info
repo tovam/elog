@@ -1,3 +1,4 @@
 {application,elog}.
 {packages,[]}.
-{modules,[elog]}.
+{modules,[elog,elog_handler,elogger,elogger_console,elogger_file,
+          elogger_mail]}.

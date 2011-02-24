@@ -12,7 +12,7 @@ It was tested on a very log-intensive application running on a server with 128K 
 <ol>
     <li>First you should include <code>"elog.hrl"</code> in each module you wish to
         log from</li>
-    <li>To log something, just use <b>?LEVEL(Str, Args)</b> macros on your code.
+    <li>To log something, just use <b>?<i>LEVEL</i>(Str, Args)</b> macros on your code.
         The available levels are:
         <ul>
             <li><b>DEBUG</b></li>
@@ -26,31 +26,40 @@ It was tested on a very log-intensive application running on a server with 128K 
                               of an exception catch block)</li>
             <li><b>FATAL</b></li>
         </ul></li>
-    <li>You can use <b>no_LEVEL</b> macros to avoid the log calls of level <b>LEVEL</b> when compiling</li>
+    <li>You can use <b>no_<i>LEVEL</i></b> macros to avoid the log calls of level <b><i>LEVEL</i></b> when compiling</li>
     <li>You can use <b>no_log</b> to compile your code with no log at all</li>
     <li>To start logging, start the app (i.e. <code>elog:start().</code> or <code>application:start(elog).</code>)</li>
-    <li>To decide what to log by default you can set the <i>log_level</i> environment variable for the app</li>
-    <li>If you want to log to a file instead of the console, just set the <i>log_file</i> environment variable with the file name</li>
+    <li>To decide what to log by default you need to <a href="#configuration">configure the App</a></li>
+    <li>You have several {@link elogger} options to choose in order to decide how to log:
+      <ul>
+        <li>Use {@link elogger_console} to log into the console</li>
+        <li>Use {@link elogger_file} if you want your logs into archives</li>
+        <li>Use {@link elogger_mail} to spam peopl... I mean... to send a mail for each log message</li>
+        <li>You can also create your own {@link elogger} implementation to suit your needs</li>
+      </ul>
+    </li>
+    <li>We've added a couple of convenient functions to {@link elog} to let our users log <i>better</i>. <a href="elog.html#index">Check them out</a></li>
+    <li>If you want to trap error_logger messages or even replace it altogether, you should check {@link elog_handler}</li>
 </ol>
+== Configuration ==
+<a name="configuration" />
+<b>elog</b> uses Erlang config files to set its environmental variables. The allowed options are:
+<dl>
+  <dt><b>level</b></dt>
+    <dd>Default log level: nothing below that level will be logged unless an specific logger is started for that</dd>
+  <dt><b>logger</b></dt>
+    <dd>Default logger: unless otherwise specified (see below), this {@link elogger} implementation will be used to handle all logging</dd>
+  <dt><b><i>LEVEL</i></b></dt>
+    <dd>Specific configuration for <i>LEVEL</i>. Each log level may have its own configuration. The allowed options are:
+      <dl>
+        <dt><b>logger</b></dt>
+          <dd>Logger: {link @elogger} implementation to be used for this level</dd>
+      </dl>
+    </dd>
+</dl>                                
 
-== Good News ==
-We've added a couple of convenient functions to let our users log <i>better</i>.
-We list them here, check the rest of the documentation for them
-<ul>
-    <li>You can set the log level for a particular module</li>
-    <li>You can set the log level for a particular regular expression</li>
-    <li>You can trap error_logger messages</li>
-    <li>You can even replace error_logger default handlers</li>
-</ul>
-
-== Bad News ==
-There're many many things missing for this project to became a <b>really</b> logging subsystem. For instance...
-<ul>
-    <li>Logging to a file is almost a HACK, not really well designed</li>
-    <li>When you decide to set the log level for a module, every other module
-        compiled with that level on will start sending messages to the logger.
-        The logger will ignore them anyway, but if you're concern about the
-        amount of messages sent through the system you should use this feature
-        with extra care</li>
-    <li>The logging format is hardcoded</li>
-</ul>
+== Performance Notice ==
+Note that when you decide to set the log level for a module, every other module compiled with that 
+level on will start sending messages to the logger. The logger will ignore them anyway, but if you're
+concerned about the amount of messages sent through the system you should use this feature with extra
+care
