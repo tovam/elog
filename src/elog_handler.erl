@@ -1,8 +1,7 @@
 %%%-------------------------------------------------------------------
-%%% @hidden
 %%% @author Fernando Benavides <greenmellon@gmail.com>
 %%% @copyright (C) 2011 Fernando Benavides <greenmellon@gmail.com>
-%%% @doc elog error handler
+%%% @doc <b>elog</b> error handler for {@link error_logger}
 %%% @end
 %%%-------------------------------------------------------------------
 -module(elog_handler).

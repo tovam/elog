@@ -1,7 +1,10 @@
 %%%-------------------------------------------------------------------
 %%% @author Fernando Benavides <greenmellon@gmail.com>
 %%% @copyright (C) 2011 Fernando Benavides <greenmellon@gmail.com>
-%%% @doc Console {@link elogger}
+%%% @doc Console {@link elogger}.
+%%% ==Usage==
+%%%       To use it in elog <a href="overview-summary.html#configuration">config files</a> you need to set 
+%%%       the corresponding <i>logger</i> env variable to: <code>{elogger_console, []}</code>
 %%% @end
 %%%-------------------------------------------------------------------
 -module(elogger_console).

@@ -1,8 +1,8 @@
 %%%-------------------------------------------------------------------
 %%% @author Fernando Benavides <greenmellon@gmail.com>
 %%% @copyright (C) 2011 Fernando Benavides <greenmellon@gmail.com>
-%%% @doc The real logging module behaviour
-%%% The user module should export:
+%%% @doc The real logging module behaviour.
+%%% Defines how the messages will be logged. The user module should export:
 %%%<ul>
 %%%   <li>
 %%%   <pre>init(Args::term()) -> {@link init_result()}</pre>
