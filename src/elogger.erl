@@ -129,7 +129,7 @@ remove(Level, ModuleOrRegExp) ->
 %% GEN SERVER CALLBACKS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @hidden
--spec init(all | just_exceptions) -> {ok, state()}.
+-spec init({all | just_exceptions, atom(), term()}) -> {ok, state()} | init_result().
 init({What, Mod, InitArgs}) ->
   case Mod:init(InitArgs) of
     {ok, ModState} ->

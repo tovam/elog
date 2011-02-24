@@ -27,14 +27,14 @@
 
 -export([init/1, log/2, terminate/2]).
 
--record(state, {server      :: undefined | string() | {string(), pos_integer()},
-                source      :: {string(), string()},
+-record(state, {server      :: {string(), pos_integer()},
+                source      :: {string(), string(), string()},
                 recipients  :: [string()],
                 subject     :: string()}).
 -opaque state() :: #state{}.
 
 %%% @hidden
--spec init([proplists:property()]) -> elogger:init_result().
+-spec init([proplists:property()]) -> {ok, state()} | {stop, {invalid_source, term()}}.
 init(Props) ->
   case proplists:get_value(source, Props) of
     Source = {_, SrcAddr, _} ->
@@ -121,8 +121,10 @@ send_no_recv(Socket, Data) ->
   ssl:send(Socket, Data ++ [13,10]).
 
 send(Socket, Data) ->
-  send_no_recv(Socket, Data),
-  recv(Socket).
+  case send_no_recv(Socket, Data) of
+    ok -> recv(Socket);
+    Error -> Error
+  end.
 
 recv(Socket) ->
   case ssl:recv(Socket, 0, 30000) of

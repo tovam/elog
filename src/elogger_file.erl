@@ -32,7 +32,7 @@
 -opaque state() :: #state{}.
 
 %%% @hidden
--spec init([proplists:property()]) -> elogger:init_result().
+-spec init([proplists:property()]) -> {ok, state()} | {stop, atom()}.
 init(Props) ->
   Filename = proplists:get_value(file, Props, "elog.log"),
   Dir = filename:dirname(Filename),
@@ -73,8 +73,8 @@ log(#log{time        = {_,{HH,Mm,SS}},
   {ok, Fd} = file:open(filename:absname(FileName), [write, append]),
   io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
             [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]),
-  file:close(Fd),
-  limit_check(FileName, Limit),
+  ok = file:close(Fd),
+  ok = limit_check(FileName, Limit),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
@@ -100,8 +100,8 @@ log(#log{time        = {_,{HH,Mm,SS}},
   io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
               "~n\tStack Trace:~n\t\t~p~n",
             [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack]),
-  limit_check(FileName, Limit),
-  file:close(Fd),
+  ok = limit_check(FileName, Limit),
+  ok = file:close(Fd),
   {ok, State}.
 
 %%% @hidden

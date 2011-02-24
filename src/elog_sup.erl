@@ -31,7 +31,7 @@ start_link() ->
   supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %% @hidden
--spec add_exception(loglevel()) -> startlink_ret().
+-spec add_exception(loglevel()) -> {ok, pid()} | {error, startlink_err()}.
 add_exception(Level) ->
   Name = list_to_atom("exc-" ++ atom_to_list(Level)),
   ChildSpec =

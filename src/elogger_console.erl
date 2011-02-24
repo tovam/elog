@@ -17,9 +17,8 @@
 -export([init/1, log/2, terminate/2]).
 
 %%% @hidden
--spec init([]) -> elogger:init_result().
-init([]) ->
-  {ok, {}}.
+-spec init([]) -> {ok, {}}.
+init([]) -> {ok, {}}.
 
 %%% @hidden
 -spec log(elogger:log(), {}) -> {ok, {}}.

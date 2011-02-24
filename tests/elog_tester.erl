@@ -13,7 +13,7 @@
 
 -define(SLEEP, 1000).
 
--spec main() -> ok.
+-spec main() -> no_return().
 main() ->
   start(),
   timer:sleep(?SLEEP),
