@@ -1,7 +1,7 @@
 {application, elog,
  [
   {description, "Yet another logging library for Erlang"},
-  {vsn, "1.0"},
+  {vsn, "2.0"},
   {registered, []},
   {applications, [
                   kernel,
@@ -11,9 +11,7 @@
                   ssl
                  ]},
   {mod, {elog, []}},
-  {env, [{level, info}, %% Global level
+  {env, [{level, info},
          {logger, {elogger_console, []}}
-         %% {logger, {elogger_file, ["logs/elog.log"]}}, %% Default logger
-         %% {warn, [{logger, {elogger_console, []}}]} %% Params just for warnings
         ]}
  ]}.
