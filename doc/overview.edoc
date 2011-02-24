@@ -1,7 +1,7 @@
 ** this is the overview.doc file for the application 'elog' **
 @author Fernando Benavides <greenmellon@gmail.com>
 @copyright 2010 Fernando Benavides <greenmellon@gmail.com>
-@version 1.0
+@version 2.0
 @reference Check the project on <a href="https://github.com/elbrujohalcon/elog">Github</a>
 @title Yet another logging library for Erlang
 @doc
