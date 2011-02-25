@@ -19,7 +19,7 @@
 %%%   <dt><b>recipients</b> :: [string()]</dt>
 %%%     <dd>People who should receive the mails</dd>
 %%%   <dt><b>subject</b> :: string()</dt>
-%%%     <dd>A string to be used as the subject/dd>
+%%%     <dd>A string to be used as the subject</dd>
 %%% </dl>
 %%% @end
 %%%-------------------------------------------------------------------
