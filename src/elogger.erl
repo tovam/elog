@@ -11,6 +11,9 @@
 %%%   <pre>log(Message::{@link log()}, State::term()) -> {ok, NewState::term()}</pre>  
 %%%     Called each time a message is received<br/>
 %%%   </li><li>
+%%%   <pre>handle_info(Message::term(), State::term()) -> {ok, NewState::term()}</pre>  
+%%%     Called each time an erlang message is received<br/>
+%%%   </li><li>
 %%%   <pre>terminate(Reason :: normal | shutdown | term(), State) -> _</pre>
 %%%     Let the user module clean up. Always called when server terminates.<br/>
 %%%   </li></ul>
@@ -67,7 +70,7 @@
 
 %%% @hidden
 -spec behaviour_info(callbacks | term()) -> undefined | [{atom(), non_neg_integer()}].
-behaviour_info(callbacks) -> [{init, 1}, {log, 2}, {terminate, 2}];
+behaviour_info(callbacks) -> [{init, 1}, {log, 2}, {handle_info, 2}, {terminate, 2}];
 behaviour_info(_Other) ->
   undefined.
 
@@ -195,9 +198,18 @@ handle_cast(Msg, State) ->
 
 %% @hidden
 -spec handle_info(term(), state()) -> {noreply, state()}.
-handle_info(Msg, State) ->
-  error_logger:error_msg("Unexpected message: ~p~n", [Msg]),
-  {noreply, State}.
+handle_info(Info, State = #state{module = Mod, mod_state = ModState}) ->
+  try Mod:handle_info(Info, ModState) of
+    {ok, NewModSt} -> 
+      {noreply, State#state{mod_state = NewModSt}};
+    _ ->
+      {noreply, State}
+  catch
+    _:{ok, NewModSt} -> 
+      {noreply, State#state{mod_state = NewModSt}};
+    _:_ ->
+      {noreply, State}
+  end.
 
 %% @hidden
 -spec terminate(term(), state()) -> ok.

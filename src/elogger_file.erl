@@ -23,7 +23,7 @@
 
 -include("elog.hrl").
 
--export([init/1, log/2, terminate/2]).
+-export([init/1, log/2, handle_info/2, terminate/2]).
 
 -record(state, {dir       = "."         :: string(),
                 file      = "elog.log"  :: string(),
@@ -105,7 +105,11 @@ log(#log{time        = {_,{HH,Mm,SS}},
   {ok, State}.
 
 %%% @hidden
--spec terminate(normal | shutdown | term(), {}) -> ok.
+-spec handle_info(term(), state()) -> {ok, state()}.
+handle_info(_Info, State) -> {ok, State}.
+
+%%% @hidden
+-spec terminate(normal | shutdown | term(), state()) -> ok.
 terminate(_Reason, _State) -> ok.
 
 limit_check(_FileName, infinity) -> ok;

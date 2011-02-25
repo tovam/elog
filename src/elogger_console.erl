@@ -14,7 +14,7 @@
 
 -include("elog.hrl").
 
--export([init/1, log/2, terminate/2]).
+-export([init/1, log/2, handle_info/2, terminate/2]).
 
 %%% @hidden
 -spec init([]) -> {ok, {}}.
@@ -47,6 +47,10 @@ log(#log{time        = {_,{HH,Mm,SS}},
               "~n\tStack Trace:~n\t\t~p~n",
             [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args] ++ [Stack]),
   {ok, State}.
+
+%%% @hidden
+-spec handle_info(term(), {}) -> {ok, {}}.
+handle_info(_Info, State) -> {ok, State}.
 
 %%% @hidden
 -spec terminate(normal | shutdown | term(), {}) -> ok.

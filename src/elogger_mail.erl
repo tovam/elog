@@ -25,7 +25,7 @@
 
 -include("elog.hrl").
 
--export([init/1, log/2, terminate/2]).
+-export([init/1, log/2, handle_info/2, terminate/2]).
 
 -record(state, {server      :: {string(), pos_integer()},
                 source      :: {string(), string(), string()},
@@ -66,9 +66,9 @@ log(#log{time        = {_,{HH,Mm,SS}},
                                            recipients = Recipients,
                                            subject    = SubjectFormat}) ->
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
-  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-                          [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]),
-  spawn(fun() -> send_message(Server, Source, Recipients, Subject, Message) end),
+  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p|~p: " ++ Text,
+                          [HH,Mm,SS, Pid, Mod, Line | Args]),
+  mailer:send(Server, Source, Recipients, Subject, Message),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
@@ -83,55 +83,16 @@ log(#log{time        = {_,{HH,Mm,SS}},
                                               recipients = Recipients,
                                               subject    = SubjectFormat}) ->
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
-  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
+  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p|~p: " ++ Text ++
                             "~n\tStack Trace:~n\t\t~p~n",
-                          [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack]),
-  spawn(fun() -> send_message(Server, Source, Recipients, Subject, Message) end),
+                          [HH,Mm,SS, Pid, Mod, Line | Args] ++ [Stack]),
+  mailer:send(Server, Source, Recipients, Subject, Message),
   {ok, State}.
 
 %%% @hidden
--spec terminate(normal | shutdown | term(), {}) -> ok.
+-spec handle_info(term(), state()) -> {ok, state()}.
+handle_info(_Info, State) -> {ok, State}.
+
+%%% @hidden
+-spec terminate(normal | shutdown | term(), state()) -> ok.
 terminate(_Reason, _State) -> ok.
-
-send_message(_Server, _Source, [], _Subject, _Message) -> ok;
-send_message({Host, Port}, {SrcName, SrcAddr, SrcPwd}, Recipients, Subject, Message) ->
-  {ok, Socket} = ssl:connect(Host, Port, [{ssl_imp, old},{active, false}], 60000),
-  ok = recv(Socket),
-  ok = send(Socket, "HELO localhost"),
-  ok = send(Socket, "AUTH LOGIN"),
-  ok = send(Socket, binary_to_list(base64:encode(SrcAddr))),
-  ok = send(Socket, binary_to_list(base64:encode(SrcPwd))),
-  ok = send(Socket, ["MAIL FROM:<", SrcAddr, ">"]),
-  lists:foreach(fun(Rcpt) -> ok = send(Socket, ["RCPT TO:", $<, Rcpt, $>]) end, Recipients),
-  ok = send(Socket, "DATA"),
-  ok = send_no_recv(Socket, ["From: ", SrcName, $<, SrcAddr, $>]),
-  ok = send_no_recv(Socket, ["Date: ", httpd_util:rfc1123_date()]),
-  ok = send_no_recv(Socket, ["Subject: " | Subject]),
-  ok = send_no_recv(Socket, "Content-type: text/plain"),
-  ok = send_no_recv(Socket, ""),
-  ok = send_no_recv(Socket, Message),
-  ok = send_no_recv(Socket, ""),
-  ok = send(Socket, "."),
-  ok = send(Socket, "QUIT"),
-  ssl:close(Socket),
-  io:format("Mail sent from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients]).
-
-send_no_recv(Socket, Data) ->
-  %io:format([$> | Data] ++ [13,10]),
-  ssl:send(Socket, Data ++ [13,10]).
-
-send(Socket, Data) ->
-  case send_no_recv(Socket, Data) of
-    ok -> recv(Socket);
-    Error -> Error
-  end.
-
-recv(Socket) ->
-  case ssl:recv(Socket, 0, 30000) of
-    {ok, _Return} ->
-      %io:format([$< | _Return]),
-      ok;
-    {error, Reason} ->
-      error_logger:error_msg("~p:~p > ~p~n", [?MODULE, ?LINE, Reason]),
-      {error, Reason}
-  end.
