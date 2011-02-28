@@ -56,11 +56,11 @@ init(Props) ->
         {undefined, infinity} ->
           {stop, {invalid_parameters, Minutes, Count}};
         {Minutes, Count} ->
-          case Minutes of
-            undefined -> noop;
-            Minutes -> {ok, _Timer} = timer:send_interval(erlang:trunc(Minutes * 60 * 1000),
-                                                          send_mail)
-          end,
+          {ok, _Timer} = 
+            case Minutes of
+              undefined -> {ok, undefined};
+              Minutes -> timer:send_interval(erlang:trunc(Minutes * 60 * 1000), send_mail)
+            end,
           {ok, #state{server      = Server,
                       source      = Source,
                       recipients  = proplists:get_value(recipients, Props, [SrcAddr]),
