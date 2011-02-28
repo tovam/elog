@@ -116,5 +116,5 @@ handle_info(send_mail, State = #state{logs       = Logs,
 handle_info(_Info, State) -> {ok, State}.
 
 %%% @hidden
--spec terminate(normal | shutdown | term(), {}) -> {ok, state()}.
+-spec terminate(normal | shutdown | term(), state()) -> {ok, state()}.
 terminate(_Reason, State) -> handle_info(send_mail, State).
