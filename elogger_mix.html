@@ -1,34 +1,28 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>Module elogger_mail</title>
+<title>Module elogger_mix</title>
 <link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
 </head>
 <body bgcolor="white">
 <div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
 <hr>
 
-<h1>Module elogger_mail</h1>
-<ul class="index"><li><a href="#description">Description</a></li></ul>Mail <a href="elogger.html"><code>elogger</code></a>.
+<h1>Module elogger_mix</h1>
+<ul class="index"><li><a href="#description">Description</a></li></ul>Mixed <a href="elogger.html"><code>elogger</code></a>.
 <p>Copyright © (C) 2011 Fernando Benavides &lt;greenmellon@gmail.com&gt;</p>
 
 <p><b>Behaviours:</b> <a href="elogger.html"><tt>elogger</tt></a>.</p>
 <p><b>Authors:</b> Fernando Benavides (<a href="mailto:greenmellon@gmail.com"><tt>greenmellon@gmail.com</tt></a>).</p>
 
-<h2><a name="description">Description</a></h2>Mail <a href="elogger.html"><code>elogger</code></a>.
+<h2><a name="description">Description</a></h2>Mixed <a href="elogger.html"><code>elogger</code></a>. Let's you use many <a href="elogger.html"><code>elogger</code></a>s at the same time
    <h3><a name="Usage">Usage</a></h3>
          To use it in elog <a href="overview-summary.html#configuration">config files</a> you need to set
-         the corresponding <i>logger</i> env variable to: <code>{elogger_mail, [Option]}</code><br>
+         the corresponding <i>logger</i> env variable to: <code>{elogger_mix, [Option]}</code><br>
          (where <code>Option :: {Name::atom(), Value::term()}</code>). Availabe options include:
    <dl>
-     <dt><b>source</b> :: {SrcName::string(), SrcAddr::string(), SrcPwd::string()}</dt>
-       <dd>Source account, with name (SrcName), mail address (SrcAddr) and password (SrcPwd)</dd>
-     <dt><b>server</b> :: Host::string() | {Host::string(), Port::pos_integer()}</dt>
-       <dd>SMTP server host (and port) to use</dd>
-     <dt><b>recipients</b> :: [string()]</dt>
-       <dd>People who should receive the mails</dd>
-     <dt><b>subject</b> :: string()</dt>
-       <dd>A string like the ones used in <a href="io.html#format-2"><code>io:format/2</code></a>. It will receive 2 atom parameters: Level and Node</dd>
+     <dt><b>loggers</b> :: [{Name::atom(), InitArgs::term()}]</dt>
+       <dd>Loggers to use</dd>
    </dl><hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
