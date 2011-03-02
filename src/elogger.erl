@@ -239,10 +239,11 @@ call_logger(Msg, State = #state{module = Mod, mod_state = ModState}) ->
     {ok, NewModState} ->
       {noreply, State#state{mod_state = NewModState}};
     Other ->
-      io:format("~p:~p - Invalid response: ~p~n", [?MODULE, ?LINE, Other]),
+      io:format("~p:~p - Invalid response from ~p: ~p~n", [?MODULE, ?LINE, Mod, Other]),
       {noreply, State}
   catch
     _:Error ->
-      io:format("~p:~p - Error: ~p~n", [?MODULE, ?LINE, Error]),
+      error_logger:error_msg("~p:~p - Error: ~p~n\t~p~n", [?MODULE, ?LINE, Error,
+                                                           erlang:get_stacktrace()]),
       {noreply, State}
   end.
