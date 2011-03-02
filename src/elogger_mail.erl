@@ -66,8 +66,8 @@ log(#log{time        = {_,{HH,Mm,SS}},
                                            recipients = Recipients,
                                            subject    = SubjectFormat}) ->
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
-  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p|~p: " ++ Text,
-                          [HH,Mm,SS, Pid, Mod, Line | Args]),
+  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p: " ++ Text,
+                          [HH,Mm,SS, Mod, Line | Args]),
   mailer:send(Server, Source, Recipients, Subject, Message),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
@@ -83,9 +83,9 @@ log(#log{time        = {_,{HH,Mm,SS}},
                                               recipients = Recipients,
                                               subject    = SubjectFormat}) ->
   Subject = io_lib:format(SubjectFormat, [Level, Node]),
-  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p|~p: " ++ Text ++
+  Message = io_lib:format("~2..0b:~2..0b:~2..0b|~s:~p: " ++ Text ++
                             "~n\tStack Trace:~n\t\t~p~n",
-                          [HH,Mm,SS, Pid, Mod, Line | Args] ++ [Stack]),
+                          [HH,Mm,SS, Mod, Line | Args] ++ [Stack]),
   mailer:send(Server, Source, Recipients, Subject, Message),
   {ok, State}.
 
