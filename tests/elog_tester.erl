@@ -78,7 +78,7 @@ start() ->
                 "~n------------------------------------------------~n"),
   ok = log_all().
 
--spec start(pos_integer(), loglevel(), string(), [term()]) -> {ok, timer:tref()}.
+-spec start(pos_integer(), elog:loglevel(), string(), [term()]) -> {ok, timer:tref()}.
 start(Time, Level, Format, Args) ->
   timer:apply_interval(Time, ?MODULE, log, [Level, Format, Args]).
 
@@ -86,7 +86,7 @@ start(Time, Level, Format, Args) ->
 stop(Timer) ->
   timer:cancel(Timer).
 
--spec log(loglevel(), string(), [term()]) -> ok.
+-spec log(elog:loglevel(), string(), [term()]) -> ok.
 log(?LOG_LEVEL_DEBUG, Format, Args) -> ?DEBUG(Format, Args);
 log(?LOG_LEVEL_ERROR, Format, Args) -> ?ERROR(Format, Args);
 log(?LOG_LEVEL_FATAL, Format, Args) -> ?FATAL(Format, Args);

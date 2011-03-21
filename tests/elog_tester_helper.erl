@@ -11,7 +11,7 @@
 
 -export([log_all/0]).
 
--spec log(loglevel(), string(), [term()]) -> ok.
+-spec log(elog:loglevel(), string(), [term()]) -> ok.
 log(?LOG_LEVEL_DEBUG, Format, Args) -> ?DEBUG(Format, Args);
 log(?LOG_LEVEL_ERROR, Format, Args) -> ?ERROR(Format, Args);
 log(?LOG_LEVEL_FATAL, Format, Args) -> ?FATAL(Format, Args);

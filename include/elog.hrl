@@ -22,11 +22,9 @@
 -define(LOG_LEVEL_FATAL, fatal).
 -define(LOG_LEVELS, [?LOG_LEVEL_DEBUG, ?LOG_LEVEL_INFO, ?LOG_LEVEL_STAT,
                      ?LOG_LEVEL_WARN, ?LOG_LEVEL_ERROR, ?LOG_LEVEL_FATAL]).
-%% @type loglevel() = debug | info | stat | warn | error | fatal
--type loglevel() :: ?LOG_LEVEL_DEBUG | ?LOG_LEVEL_INFO | ?LOG_LEVEL_STAT | ?LOG_LEVEL_WARN | ?LOG_LEVEL_ERROR | ?LOG_LEVEL_FATAL.
 
 -record(log, {time = erlang:localtime() :: {{2010..9999,1..12,1..31},{0..23,0..59,0..59}},
-              level                     :: loglevel(),
+              level                     :: elog:loglevel(),
               module                    :: atom(),
               line                      :: integer(),
               pid                       :: pid(),

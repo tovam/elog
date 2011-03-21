@@ -10,9 +10,6 @@
 -export([send/5]).
 
 %%% @doc  Sends a mail
-%%% @spec send(Server::{Host::string(), Port::integer()},
-%%%            Source::{Name::string(), Address::string(), Password::string()},
-%%%            Recepients::[string()], Subject::iodata(), Body::iodata()) -> ok
 -spec send({string(), integer()}, {string(), string(), string()}, [string()], iodata(), iodata()) -> ok.
 send(Server, Source, Recipients, Subject, Body) ->
   _Pid = spawn(fun() -> send_message(Server, Source, Recipients, Subject, Body) end),

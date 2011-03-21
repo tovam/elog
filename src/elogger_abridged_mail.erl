@@ -79,6 +79,7 @@ log(Log, State = #state{logs  = Logs,
 log(Log, State = #state{logs  = Logs}) ->
   handle_info(send_mail, State#state{logs = [Log|Logs]}).
 
+%%% @hidden
 -spec handle_info(send_mail | term(), state()) -> {ok, state()}.
 handle_info(send_mail, State = #state{logs = []}) -> {ok, State};
 handle_info(send_mail, State = #state{logs       = Logs,

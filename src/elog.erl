@@ -17,12 +17,14 @@
 %% APPLICATION
 -export([start/2, stop/1]).
 
+-type loglevel() :: ?LOG_LEVEL_DEBUG | ?LOG_LEVEL_INFO | ?LOG_LEVEL_STAT | ?LOG_LEVEL_WARN | ?LOG_LEVEL_ERROR | ?LOG_LEVEL_FATAL.
+-export_type([loglevel/0]).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% API FUNCTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% @doc  Returns global config values
-%%% @spec get_env(level | logger) -> term()
 -spec get_env(level | logger) -> term().
 get_env(Key) ->
   case application:get_env(elog, Key) of
@@ -31,7 +33,6 @@ get_env(Key) ->
   end.
 
 %%% @doc  Returns a configuration parameter
-%%% @spec get_env(loglevel(), logger) -> term()
 -spec get_env(loglevel(), logger) -> term().
 get_env(Level, Key) ->
   case application:get_env(elog, Level) of
@@ -40,20 +41,17 @@ get_env(Level, Key) ->
   end.
 
 %%% @doc  Starts the application
-%%% @spec start() -> ok
 -spec start() -> ok.
 start() ->
   application:start(elog).
 
 %%% @doc  Sets the global log level
-%%% @spec level(loglevel()) -> ok
 -spec level(loglevel()) -> ok.
 level(Level) ->
   application:set_env(elog, log_level, Level),
   elog_sup:reload().
 
 %%% @doc  Sets the log level for a particular module or regular expression
-%%% @spec level(loglevel(), atom() | string()) -> ok
 -spec level(loglevel(), atom() | string()) -> ok.
 level(Level, ModuleOrRegExp) ->
   _ = lists:foldl(

@@ -35,21 +35,8 @@
 %% @headerfile "elog.hrl"
 -include("elog.hrl").
 
-%% @type log() = #log{time = {{pos_integer(),pos_integer(),pos_integer()},{pos_integer(),pos_integer(),pos_integer()}},
-%%                    level = loglevel(),
-%%                    module = atom(),
-%%                    line = integer(),
-%%                    pid = pid(),
-%%                    node = node(),
-%%                    stacktrace = [term()],
-%%                    text = string(),
-%%                    args = [term()]}
 -type log() :: #log{}.
-
-%% @type init_result()     = {ok, State::term()} | ignore | {stop, Reason::term()}.
-%%       The expected result for Mod:init/1
 -type init_result() :: {ok, State::term()} | ignore | {stop, Reason::term()}.
-
 -export_type([log/0, init_result/0]).
 
 
@@ -78,12 +65,12 @@ behaviour_info(_Other) ->
 %% API FUNCTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% @hidden
--spec start_link(loglevel()) -> ignore | {ok, pid()}.
+-spec start_link(elog:loglevel()) -> ignore | {ok, pid()}.
 start_link(Level) ->
   start_link(Level, all).
 
 %% @hidden
--spec start_link(loglevel(), all|just_exceptions) -> ignore | {ok, pid()}.
+-spec start_link(elog:loglevel(), all|just_exceptions) -> ignore | {ok, pid()}.
 start_link(Level, What) ->
   case elog:get_env(Level, logger) of
     {Mod, InitArgs} ->
@@ -93,7 +80,7 @@ start_link(Level, What) ->
   end.
 
 %% @hidden
--spec start_link(loglevel(), all|just_exceptions, atom(), term()) -> ignore | {ok, pid()}.
+-spec start_link(elog:loglevel(), all|just_exceptions, atom(), term()) -> ignore | {ok, pid()}.
 start_link(Level, What, Mod, InitArgs) ->
   SystemLevel =
     case application:get_env(elog, log_level) of
@@ -119,12 +106,12 @@ start_link(Level, What, Mod, InitArgs) ->
   end.
 
 %% @hidden
--spec add(loglevel(), atom()|string()) -> ok.
+-spec add(elog:loglevel(), atom()|string()) -> ok.
 add(Level, ModuleOrRegExp) ->
   gen_server:call(process_name(Level), {add, ModuleOrRegExp}, infinity).
 
 %% @hidden
--spec remove(loglevel(), atom()|string()) -> ok.
+-spec remove(elog:loglevel(), atom()|string()) -> ok.
 remove(Level, ModuleOrRegExp) ->
   gen_server:call(process_name(Level), {remove, ModuleOrRegExp}, infinity).
 
@@ -224,7 +211,7 @@ code_change(_OldVersion, State, _Extra) -> {ok, State}.
 %% Internal
 %%====================================================================
 %%% @hidden
--spec process_name(loglevel()) -> atom().
+-spec process_name(elog:loglevel()) -> atom().
 process_name(Level) ->
   list_to_atom("elogger-" ++ atom_to_list(Level)).
 
