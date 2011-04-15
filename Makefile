@@ -1,6 +1,5 @@
 all:
 	rebar get-deps && rebar compile
-	erl -pa ebin -noinput +B -eval 'case make:all() of up_to_date -> halt(0); error -> halt(1) end.'
 
 clean:
 	rebar clean
