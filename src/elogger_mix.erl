@@ -80,26 +80,26 @@ log(Log, State = #state{loggers  = Loggers}) ->
                       case Log#log.category of
                         Cat ->
                           {ok, NewModSt} = Mod:log(Log, ModSt),
-                          {Mod, NewModSt};
+                          {Mod, NewModSt, {cat, Cat}};
                         _ ->
-                          {Mod, ModSt}
+                          {Mod, ModSt, {cat, Cat}}
                       end;
                  ({Mod, ModSt, {mod, XMod}}) ->
                       case Log#log.module of
                         XMod ->
                           {ok, NewModSt} = Mod:log(Log, ModSt),
-                          {Mod, NewModSt};
+                          {Mod, NewModSt, {mod, XMod}};
                         _ ->
-                          {Mod, ModSt}
+                          {Mod, ModSt, {mod, XMod}}
                       end;
                  ({Mod, ModSt, {re, RegExp}}) ->
                       case re:run(io_lib:format(Log#log.text, Log#log.args),
                                   RegExp, [{capture, none}]) of
                         match ->
                           {ok, NewModSt} = Mod:log(Log, ModSt),
-                          {Mod, NewModSt};
+                          {Mod, NewModSt, {re, RegExp}};
                         _ ->
-                          {Mod, ModSt}
+                          {Mod, ModSt, {re, RegExp}}
                       end
               end, Loggers),
   {ok, State#state{loggers = NewLoggers}}.
