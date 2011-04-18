@@ -28,27 +28,29 @@
 -export([behaviour_info/1]).
 %% API
 -export([start_link/1, start_link/2]).
--export([add/2, remove/2]).
+-export([add/3, remove/3]).
 %% GEN SERVER
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% @headerfile "elog.hrl"
 -include("elog.hrl").
 
+-type exception_class() :: mod | cat | re.
 -type log() :: #log{}.
 -type init_result() :: {ok, State::term()} | ignore | {stop, Reason::term()}.
--export_type([log/0, init_result/0]).
+-export_type([log/0, init_result/0, exception_class/0]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% INTERNAL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
--record(state, {what = all    :: all | just_exceptions,
-                modules = []  :: [atom()],
-                regexps = []  :: [{re_pattern, integer(), integer(), binary()}],
-                module        :: atom(),
-                mod_state     :: term()}).
+-record(state, {what = all      :: all | just_exceptions,
+                modules = []    :: [atom()],
+                categories = [] :: [atom()],
+                regexps = []    :: [{re_pattern, integer(), integer(), binary()}],
+                module          :: atom(),
+                mod_state       :: term()}).
 -opaque state() :: #state{}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,14 +108,14 @@ start_link(Level, What, Mod, InitArgs) ->
   end.
 
 %% @hidden
--spec add(elog:loglevel(), atom()|string()) -> ok.
-add(Level, ModuleOrRegExp) ->
-  gen_server:call(process_name(Level), {add, ModuleOrRegExp}, infinity).
+-spec add(elog:loglevel(), exception_class(), atom()|string()) -> ok.
+add(Level, Class, Value) ->
+  gen_server:call(process_name(Level), {add, Class,  Value}, infinity).
 
 %% @hidden
--spec remove(elog:loglevel(), atom()|string()) -> ok.
-remove(Level, ModuleOrRegExp) ->
-  gen_server:call(process_name(Level), {remove, ModuleOrRegExp}, infinity).
+-spec remove(elog:loglevel(), exception_class(), atom()|string()) -> ok.
+remove(Level, Class, Value) ->
+  gen_server:call(process_name(Level), {remove, Class,  Value}, infinity).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GEN SERVER CALLBACKS
@@ -132,23 +134,29 @@ init({What, Mod, InitArgs}) ->
 
 %% @hidden
 -spec handle_call({add, atom() | string()} | {remove, atom() | string()}, reference(), state()) -> {reply, ok, state()} | {stop, normal, ok, state()}.
-handle_call({add, _}, _From, State = #state{what = all}) ->
+handle_call({add, _, _}, _From, State = #state{what = all}) ->
   {reply, ok, State};
-handle_call({add, Module}, _From, State) when is_atom(Module) ->
+handle_call({add, mod, Module}, _From, State) ->
   {reply, ok, State#state{modules = [Module|State#state.modules]}};
-handle_call({add, RegExpStr}, _From, State) ->
+handle_call({add, cat, Category}, _From, State) ->
+  {reply, ok, State#state{categories = [Category|State#state.categories]}};
+handle_call({add, re, RegExpStr}, _From, State) ->
   {ok, RegExp} = re:compile(RegExpStr),
   {reply, ok, State#state{regexps = [RegExp|State#state.regexps]}};
-handle_call({remove, _}, _From, State = #state{what = all}) ->
+handle_call({remove, _, _}, _From, State = #state{what = all}) ->
   {reply, ok, State};
-handle_call({remove, Module}, _From, State = #state{modules = [Module], regexps = []}) ->
+handle_call({remove, mod, Module}, _From, State = #state{modules = [Module], regexps = [], categories = []}) ->
   {stop, normal, ok, State};
-handle_call({remove, Module}, _From, State) when is_atom(Module) ->
+handle_call({remove, mod, Module}, _From, State) ->
   {reply, ok, State#state{modules = State#state.modules -- [Module]}};
-handle_call({remove, RegExpStr}, _From, State = #state{what = just_exceptions}) ->
+handle_call({remove, cat, Category}, _From, State = #state{categories = [Category], regexps = [], modules = []}) ->
+  {stop, normal, ok, State};
+handle_call({remove, cat, Category}, _From, State) ->
+  {reply, ok, State#state{categories = State#state.categories -- [Category]}};
+handle_call({remove, re, RegExpStr}, _From, State) ->
   {ok, RegExp} = re:compile(RegExpStr),
   case State#state.regexps -- [RegExp] of
-    [] when State#state.modules =:= [] ->
+    [] when State#state.modules =:= [] andalso State#state.categories =:= [] ->
       {stop, normal, ok, State};
     NewExps ->
       {reply, ok, State#state{regexps = NewExps}}
@@ -160,14 +168,18 @@ handle_call(_Request, _From, State) ->
 -spec handle_cast(#log{}, state()) -> {noreply, state()}.
 handle_cast(Msg, State = #state{what = all}) ->
   call_logger(Msg, State);
-handle_cast(Msg = #log{module = Module,
-                       text   = Text,
-                       args   = Args},
-            State = #state{modules = Modules,
-                           regexps = RegExps}) ->
+handle_cast(Msg = #log{module   = Module,
+                       category = Category,
+                       text     = Text,
+                       args     = Args},
+            State = #state{modules    = Modules,
+                           categories = Categories,
+                           regexps    = RegExps}) ->
   case lists:member(Module, Modules)
+    orelse lists:member(Category, Categories)
          orelse lists:any(fun(RegExp) ->
-                                  match =:= re:run(io_lib:format(Text, Args), RegExp, [{capture, none}])
+                                  match =:= re:run(io_lib:format(Text, Args),
+                                                   RegExp, [{capture, none}])
                           end, RegExps) of
     true ->
       call_logger(Msg, State);

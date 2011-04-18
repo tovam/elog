@@ -21,58 +21,76 @@ main() ->
 
 -spec start() -> ok.
 start() ->
-  ok = elog:level(debug),
+  ok = elog:debug(),
   io:format("~n------------------------------------------------~n"
               "You should see 2 comments per each level..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(error),
+  ok = elog:error(),
   io:format("~n------------------------------------------------~n"
               "You should see 2 comments per each level >= error..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(fatal),
+  ok = elog:fatal(),
   io:format("~n------------------------------------------------~n"
               "You should only see fatal comments..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(debug, ?MODULE),
+  ok = elog:mod_debug(?MODULE),
   io:format("~n------------------------------------------------~n"
               "You should see 1 comments per each level < fatal..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(fatal, ?MODULE),
+  ok = elog:cat_debug(fake),
+  io:format("~n------------------------------------------------~n"
+              "You should see 1 comments per each level < fatal..."
+                "~n------------------------------------------------~n"),
+  ok = log_all(),
+
+  timer:sleep(?SLEEP),
+  ok = elog:mod_fatal(?MODULE),
+  ok = elog:cat_fatal(fake),
   io:format("~n------------------------------------------------~n"
               "You should only see fatal comments..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(info, ?MODULE),
-  ok = elog:level(info, elog_tester_helper),
+  ok = elog:mod_info(?MODULE),
+  ok = elog:mod_info(elog_tester_helper),
   io:format("~n------------------------------------------------~n"
               "You should see 2 comments per each level >= info..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(warn),
+  ok = elog:mod_fatal(?MODULE),
+  ok = elog:mod_fatal(elog_tester_helper),
+  ok = elog:cat_info(fake),
+  ok = elog:cat_info(default),
+  io:format("~n------------------------------------------------~n"
+              "You should see 2 comments per each level >= info..."
+                "~n------------------------------------------------~n"),
+  ok = log_all(),
+  
+  timer:sleep(?SLEEP),
+  ok = elog:warn(),
   io:format("~n------------------------------------------------~n"
               "You should see 2 comments per each level >= warn..."
                 "~n------------------------------------------------~n"),
   ok = log_all(),
   
   timer:sleep(?SLEEP),
-  ok = elog:level(fatal),
-  ok = elog:level(debug, "debug"),
+  ok = elog:fatal(),
+  ok = elog:re_debug("debug"),
   io:format("~n------------------------------------------------~n"
               "You should see 2 fatal and 2 debug comments..."
                 "~n------------------------------------------------~n"),
@@ -87,12 +105,12 @@ stop(Timer) ->
   timer:cancel(Timer).
 
 -spec log(elog:loglevel(), string(), [term()]) -> ok.
-log(?LOG_LEVEL_DEBUG, Format, Args) -> ?DEBUG(Format, Args);
-log(?LOG_LEVEL_ERROR, Format, Args) -> ?ERROR(Format, Args);
-log(?LOG_LEVEL_FATAL, Format, Args) -> ?FATAL(Format, Args);
-log(?LOG_LEVEL_INFO, Format, Args) -> ?INFO(Format, Args);
-log(?LOG_LEVEL_STAT, Format, Args) -> ?STAT(Format, Args);
-log(?LOG_LEVEL_WARN, Format, Args) -> ?WARN(Format, Args).
+log(?LOG_LEVEL_DEBUG, Format, Args) -> ?CDEBUG(fake, Format, Args);
+log(?LOG_LEVEL_ERROR, Format, Args) -> ?CERROR(fake, Format, Args);
+log(?LOG_LEVEL_FATAL, Format, Args) -> ?CFATAL(fake, Format, Args);
+log(?LOG_LEVEL_INFO, Format, Args) -> ?CINFO(fake, Format, Args);
+log(?LOG_LEVEL_STAT, Format, Args) -> ?CSTAT(fake, Format, Args);
+log(?LOG_LEVEL_WARN, Format, Args) -> ?CWARN(fake, Format, Args).
 
 log_all() ->
   lists:foreach(

@@ -79,13 +79,13 @@ handle_event(Event = {warning_report, _GL, _Report}, State = #state{sasl = ignor
 handle_event(_Event, State = #state{sasl = ignore}) ->
   {ok, State};
 handle_event({error, _GLeader, {_Pid, Text, Args}}, State) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, Text, Args, []),
+  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
   {ok, State};
 handle_event({error_report, _GLeader, {_Pid, Type, [Int|_] = Report}}, State) when is_integer(Int) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, "~s:~n\t~s~n", [Type, Report], []),
+  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, "~s:~n\t~s~n", [Type, Report], []),
   {ok, State};
 handle_event({error_report, _GLeader, {_Pid, Type, Report}}, State) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, "~s:~n\t~p~n", [Type, Report], []),
+  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, "~s:~n\t~p~n", [Type, Report], []),
   {ok, State};
 handle_event({warning_msg, _GLeader, {_Pid, Text, Args}}, State) ->
   ?WARN(Text, Args),
@@ -112,7 +112,7 @@ handle_event({info_report, _GLeader, {_Pid, Type, Report}}, State) ->
   ?INFO("~s:~n\t~p~n", [Type, Report]),
   {ok, State};
 handle_event(Event, State) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, "Unknown error logged:~n\t~p~n", [Event], []),
+  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, "Unknown error logged:~n\t~p~n", [Event], []),
   {ok, State}.
 
 %% @hidden
@@ -125,7 +125,7 @@ handle_info(_Info, State) -> {ok, State}.
 %% @hidden
 -spec terminate(term(), state()) -> ok.
 terminate(Reason, _State) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, "elog handler removed: ~p~n", [Reason], []).
+  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, "elog handler removed: ~p~n", [Reason], []).
 
 %% @hidden
 -spec code_change(term(), state(), term()) -> {ok, state()}.

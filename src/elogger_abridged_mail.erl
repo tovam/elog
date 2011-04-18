@@ -90,6 +90,7 @@ handle_info(send_mail, State = #state{logs       = Logs,
   Message =
     lists:map(fun(#log{time        = {_,{HH,Mm,SS}},
                        level       = Level,
+                       category    = Cat,
                        module      = Mod,
                        line        = Line,
                        pid         = Pid,
@@ -97,10 +98,11 @@ handle_info(send_mail, State = #state{logs       = Logs,
                        text        = Text,
                        args        = Args,
                        stacktrace  = []}) ->
-                      io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-                                    [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]);
+                      io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p/~p: " ++ Text,
+                                    [HH,Mm,SS, Pid, Node, Mod, Line, Cat, Level | Args]);
                  (#log{time        = {_,{HH,Mm,SS}},
                        level       = Level,
+                       category    = Cat,
                        module      = Mod,
                        line        = Line,
                        pid         = Pid,
@@ -108,9 +110,9 @@ handle_info(send_mail, State = #state{logs       = Logs,
                        text        = Text,
                        args        = Args,
                        stacktrace  = Stack}) ->
-                      io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
+                      io_lib:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p/~p: " ++ Text ++
                                       "~n\tStack Trace:~n\t\t~p~n",
-                                    [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack])
+                                    [HH,Mm,SS, Pid, Node, Mod, Line, Cat, Level | Args] ++ [Stack])
               end, lists:reverse(Logs)),
   mailer:send(Server, Source, Recipients, Subject, Message),
   {ok, State#state{logs = []}};

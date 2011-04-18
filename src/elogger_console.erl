@@ -24,6 +24,7 @@ init([]) -> {ok, {}}.
 -spec log(elogger:log(), {}) -> {ok, {}}.
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
+         category    = Cat,
          module      = Mod,
          line        = Line,
          pid         = Pid,
@@ -31,11 +32,12 @@ log(#log{time        = {_,{HH,Mm,SS}},
          text        = Text,
          args        = Args,
          stacktrace  = []}, State) ->
-  io:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args]),
+  io:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~s/~p: " ++ Text,
+            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, fancy_cat(Cat), Level | Args]),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
+         category    = Cat,
          module      = Mod,
          line        = Line,
          pid         = Pid,
@@ -43,9 +45,9 @@ log(#log{time        = {_,{HH,Mm,SS}},
          text        = Text,
          args        = Args,
          stacktrace  = Stack}, State) ->
-  io:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
+  io:format("~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~s/~p: " ++ Text ++
               "~n\tStack Trace:~n\t\t~p~n",
-            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, Level | Args] ++ [Stack]),
+            [HH,Mm,SS, Pid, fancy_node(Node), Mod, Line, fancy_cat(Cat), Level | Args] ++ [Stack]),
   {ok, State}.
 
 %%% @hidden
@@ -55,6 +57,9 @@ handle_info(_Info, State) -> {ok, State}.
 %%% @hidden
 -spec terminate(normal | shutdown | term(), {}) -> ok.
 terminate(_Reason, _State) -> ok.
+
+fancy_cat(default) -> "";
+fancy_cat(Cat) -> Cat.
 
 fancy_node(SourceNode) ->
   case {string:tokens(atom_to_list(SourceNode), "@"),

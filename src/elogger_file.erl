@@ -52,6 +52,7 @@ init(Props) ->
 -spec log(elogger:log(), state()) -> {ok, state()}.
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
+         category    = Cat,
          module      = Mod,
          line        = Line,
          pid         = Pid,
@@ -71,13 +72,14 @@ log(#log{time        = {_,{HH,Mm,SS}},
         filename:join(Dir, File)
     end,
   {ok, Fd} = file:open(filename:absname(FileName), [write, append]),
-  io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text,
-            [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args]),
+  io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~s/~p: " ++ Text,
+            [HH,Mm,SS, Pid, Node, Mod, Line, Cat, Level | Args]),
   ok = file:close(Fd),
   ok = limit_check(FileName, Limit),
   {ok, State};
 log(#log{time        = {_,{HH,Mm,SS}},
          level       = Level,
+         category    = Cat,
          module      = Mod,
          line        = Line,
          pid         = Pid,
@@ -97,9 +99,9 @@ log(#log{time        = {_,{HH,Mm,SS}},
         filename:join(Dir, File)
     end,
   {ok, Fd} = file:open(filename:absname(FileName), [write, append]),
-  io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~p: " ++ Text ++
+  io:format(Fd, "~2..0b:~2..0b:~2..0b|~p|~s|~s:~p|~s/~p: " ++ Text ++
               "~n\tStack Trace:~n\t\t~p~n",
-            [HH,Mm,SS, Pid, Node, Mod, Line, Level | Args] ++ [Stack]),
+            [HH,Mm,SS, Pid, Node, Mod, Line, Cat, Level | Args] ++ [Stack]),
   ok = limit_check(FileName, Limit),
   ok = file:close(Fd),
   {ok, State}.

@@ -25,6 +25,7 @@
 
 -record(log, {time = erlang:localtime() :: {{2010..9999,1..12,1..31},{0..23,0..59,0..59}},
               level                     :: elog:loglevel(),
+              category = default        :: atom(),
               module                    :: atom(),
               line                      :: integer(),
               pid                       :: pid(),
@@ -34,12 +35,13 @@
               args = []                 :: [term()]}).
 
 -ifdef(no_log).
--define(LOG(LOGProcess, LOGLevel, LOGStr, LOGArgs, LOGStack), ok = hd([ok, LOGProcess, LOGLevel, LOGStr, LOGStack | LOGArgs]).
+-define(LOG(LOGProcess, LOGLevel, LOGCat, LOGStr, LOGArgs, LOGStack), ok = hd([ok, LOGProcess, LOGLevel, LOGStr, LOGStack | LOGArgs]).
 -else.
--define(LOG(LOGProcess, LOGLevel, LOGStr, LOGArgs, LOGStack),
+-define(LOG(LOGProcess, LOGLevel, LOGCat, LOGStr, LOGArgs, LOGStack),
         try
           gen_server:cast(LOGProcess,
                           #log{module      = ?MODULE,
+                               category    = LOGCat,
                                level       = LOGLevel,
                                line        = ?LINE,
                                pid         = self(),
@@ -54,35 +56,49 @@
         end).
 -endif.
 
+-define(NO_LOG(Cat, Str, Args), ok = hd([ok, Cat, Str | Args])).
+
 -ifdef(no_debug).
--define(DEBUG(Str, Args), ok = hd([ok, Str | Args])).
+-define(CDEBUG(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(DEBUG(Str, Args), ?LOG('elogger-debug', ?LOG_LEVEL_DEBUG,  Str, Args, [])).
+-define(CDEBUG(Cat, Str, Args), ?LOG('elogger-debug', ?LOG_LEVEL_DEBUG, Cat, Str, Args, [])).
 -endif.
+-define(DEBUG(Str, Args), ?CDEBUG(default, Str, Args)).
+
 -ifdef(no_info).
--define(INFO(Str, Args),  ok = hd([ok, Str | Args])).
+-define(CINFO(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(INFO(Str, Args),  ?LOG('elogger-info', ?LOG_LEVEL_INFO,  Str, Args, [])).
+-define(CINFO(Cat, Str, Args), ?LOG('elogger-info', ?LOG_LEVEL_INFO, Cat, Str, Args, [])).
 -endif.
+-define(INFO(Str, Args), ?CINFO(default, Str, Args)).
+
 -ifdef(no_stat).
--define(STAT(Str, Args),  ok = hd([ok, Str | Args])).
+-define(CSTAT(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(STAT(Str, Args),  ?LOG('elogger-stat', ?LOG_LEVEL_STAT, Str, Args, [])).
+-define(CSTAT(Cat, Str, Args), ?LOG('elogger-stat', ?LOG_LEVEL_STAT, Cat, Str, Args, [])).
 -endif.
+-define(STAT(Str, Args), ?CSTAT(default, Str, Args)).
+
 -ifdef(no_warn).
--define(WARN(Str, Args),  ok = hd([ok, Str | Args])).
+-define(CWARN(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(WARN(Str, Args),  ?LOG('elogger-warn', ?LOG_LEVEL_WARN, Str, Args, [])).
+-define(CWARN(Cat, Str, Args), ?LOG('elogger-warn', ?LOG_LEVEL_WARN, Cat, Str, Args, [])).
 -endif.
+-define(WARN(Str, Args), ?CWARN(default, Str, Args)).
+
 -ifdef(no_error).
--define(ERROR(Str, Args), ok = hd([ok, Str | Args])).
--define(THROW(Str, Args), ok = hd([ok, Str | Args])).
+-define(CERROR(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
+-define(CTHROW(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(ERROR(Str, Args), ?LOG('elogger-error', ?LOG_LEVEL_ERROR, Str, Args, erlang:get_stacktrace())).
--define(THROW(Str, Args), try throw({}) catch _:_ -> ?ERROR(Str, Args) end).
+-define(CERROR(Cat, Str, Args), ?LOG('elogger-error', ?LOG_LEVEL_ERROR, Cat, Str, Args, erlang:get_stacktrace())).
+-define(CTHROW(Cat, Str, Args), try throw({}) catch _:_ -> ?CERROR(Cat, Str, Args) end).
 -endif.
+-define(ERROR(Str, Args), ?CERROR(default, Str, Args)).
+-define(THROW(Str, Args), ?CTHROW(default, Str, Args)).
+
 -ifdef(no_fatal).
--define(FATAL(Str, Args), ok = hd([ok, Str | Args])).
+-define(CFATAL(Cat, Str, Args), ?NO_LOG(Cat, Str, Args)).
 -else.
--define(FATAL(Str, Args), ?LOG('elogger-fatal', ?LOG_LEVEL_FATAL, Str, Args, erlang:get_stacktrace())).
+-define(CFATAL(Cat, Str, Args), ?LOG('elogger-fatal', ?LOG_LEVEL_FATAL, Cat, Str, Args, erlang:get_stacktrace())).
 -endif.
+-define(FATAL(Str, Args), ?CFATAL(default, Str, Args)).

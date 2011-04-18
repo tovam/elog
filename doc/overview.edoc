@@ -59,7 +59,7 @@ It was tested on a very log-intensive application running on a server with 128K 
 </dl>                                
 
 == Performance Notice ==
-Note that when you decide to set the log level for a module, every other module compiled with that 
-level on will start sending messages to the logger. The logger will ignore them anyway, but if you're
-concerned about the amount of messages sent through the system you should use this feature with extra
-care
+Note that when you decide to set the log level for a module or category, every other module compiled
+with that level on will start sending messages to the logger. The logger will ignore them anyway,
+but if you're concerned about the amount of messages sent through the system you should use this
+feature with extra care
