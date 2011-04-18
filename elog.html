@@ -23,14 +23,128 @@
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_env-1">get_env/1</a></td><td> Returns global config values.</td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#cat_debug-1">cat_debug/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, debug, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_error-1">cat_error/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, error, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_fatal-1">cat_fatal/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, fatal, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_info-1">cat_info/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, info, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_level-2">cat_level/2</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, Level, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_stat-1">cat_stat/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, stat, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#cat_warn-1">cat_warn/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(cat, warn, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#debug-0">debug/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(debug)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#error-0">error/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(error)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#fatal-0">fatal/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(fatal)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#get_env-1">get_env/1</a></td><td> Returns global config values.</td></tr>
 <tr><td valign="top"><a href="#get_env-2">get_env/2</a></td><td> Returns a configuration parameter.</td></tr>
+<tr><td valign="top"><a href="#info-0">info/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(info)</tt></a>.
+</td></tr>
 <tr><td valign="top"><a href="#level-1">level/1</a></td><td> Sets the global log level.</td></tr>
-<tr><td valign="top"><a href="#level-2">level/2</a></td><td> Sets the log level for a particular module or regular expression.</td></tr>
+<tr><td valign="top"><a href="#level-3">level/3</a></td><td> Sets the log level for a particular module, category or regular expression.</td></tr>
+<tr><td valign="top"><a href="#mod_debug-1">mod_debug/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, debug, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_error-1">mod_error/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, error, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_fatal-1">mod_fatal/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, fatal, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_info-1">mod_info/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, info, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_level-2">mod_level/2</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, Level, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_stat-1">mod_stat/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, stat, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#mod_warn-1">mod_warn/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(mod, warn, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_debug-1">re_debug/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, debug, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_error-1">re_error/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, error, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_fatal-1">re_fatal/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, fatal, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_info-1">re_info/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, info, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_level-2">re_level/2</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, Level, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_stat-1">re_stat/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, stat, Value)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#re_warn-1">re_warn/1</a></td><td>Equivalent to <a href="#level-3"><tt>level(re, warn, Value)</tt></a>.
+</td></tr>
 <tr><td valign="top"><a href="#start-0">start/0</a></td><td> Starts the application.</td></tr>
+<tr><td valign="top"><a href="#stat-0">stat/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(stat)</tt></a>.
+</td></tr>
+<tr><td valign="top"><a href="#warn-0">warn/0</a></td><td>Equivalent to <a href="#level-1"><tt>level(warn)</tt></a>.
+</td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="cat_debug-1">cat_debug/1</a></h3>
+<div class="spec">
+<p><tt>cat_debug(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, debug, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_error-1">cat_error/1</a></h3>
+<div class="spec">
+<p><tt>cat_error(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, error, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_fatal-1">cat_fatal/1</a></h3>
+<div class="spec">
+<p><tt>cat_fatal(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, fatal, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_info-1">cat_info/1</a></h3>
+<div class="spec">
+<p><tt>cat_info(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, info, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_level-2">cat_level/2</a></h3>
+<div class="spec">
+<p><tt>cat_level(Level::<a href="#type-loglevel">loglevel()</a>, Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, Level, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_stat-1">cat_stat/1</a></h3>
+<div class="spec">
+<p><tt>cat_stat(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, stat, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="cat_warn-1">cat_warn/1</a></h3>
+<div class="spec">
+<p><tt>cat_warn(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(cat, warn, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="debug-0">debug/0</a></h3>
+<div class="spec">
+<p><tt>debug() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(debug)</tt></a>.</p>
+
+
+<h3 class="function"><a name="error-0">error/0</a></h3>
+<div class="spec">
+<p><tt>error() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(error)</tt></a>.</p>
+
+
+<h3 class="function"><a name="fatal-0">fatal/0</a></h3>
+<div class="spec">
+<p><tt>fatal() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(fatal)</tt></a>.</p>
+
 
 <h3 class="function"><a name="get_env-1">get_env/1</a></h3>
 <div class="spec">
@@ -42,23 +156,125 @@
 <p><tt>get_env(Level::<a href="#type-loglevel">loglevel()</a>, Key::logger) -&gt; term()</tt><br></p>
 </div><p> Returns a configuration parameter</p>
 
+<h3 class="function"><a name="info-0">info/0</a></h3>
+<div class="spec">
+<p><tt>info() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(info)</tt></a>.</p>
+
+
 <h3 class="function"><a name="level-1">level/1</a></h3>
 <div class="spec">
 <p><tt>level(Level::<a href="#type-loglevel">loglevel()</a>) -&gt; ok</tt><br></p>
 </div><p> Sets the global log level</p>
 
-<h3 class="function"><a name="level-2">level/2</a></h3>
+<h3 class="function"><a name="level-3">level/3</a></h3>
 <div class="spec">
-<p><tt>level(Level::<a href="#type-loglevel">loglevel()</a>, ModuleOrRegExp::atom() | string()) -&gt; ok</tt><br></p>
-</div><p> Sets the log level for a particular module or regular expression</p>
+<p><tt>level(Class::<a href="elogger.html#type-exception_class">elogger:exception_class()</a>, Level::<a href="#type-loglevel">loglevel()</a>, Value::atom() | string()) -&gt; ok</tt><br></p>
+</div><p> Sets the log level for a particular module, category or regular expression</p>
+
+<h3 class="function"><a name="mod_debug-1">mod_debug/1</a></h3>
+<div class="spec">
+<p><tt>mod_debug(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, debug, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_error-1">mod_error/1</a></h3>
+<div class="spec">
+<p><tt>mod_error(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, error, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_fatal-1">mod_fatal/1</a></h3>
+<div class="spec">
+<p><tt>mod_fatal(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, fatal, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_info-1">mod_info/1</a></h3>
+<div class="spec">
+<p><tt>mod_info(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, info, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_level-2">mod_level/2</a></h3>
+<div class="spec">
+<p><tt>mod_level(Level::<a href="#type-loglevel">loglevel()</a>, Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, Level, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_stat-1">mod_stat/1</a></h3>
+<div class="spec">
+<p><tt>mod_stat(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, stat, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="mod_warn-1">mod_warn/1</a></h3>
+<div class="spec">
+<p><tt>mod_warn(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(mod, warn, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_debug-1">re_debug/1</a></h3>
+<div class="spec">
+<p><tt>re_debug(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, debug, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_error-1">re_error/1</a></h3>
+<div class="spec">
+<p><tt>re_error(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, error, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_fatal-1">re_fatal/1</a></h3>
+<div class="spec">
+<p><tt>re_fatal(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, fatal, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_info-1">re_info/1</a></h3>
+<div class="spec">
+<p><tt>re_info(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, info, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_level-2">re_level/2</a></h3>
+<div class="spec">
+<p><tt>re_level(Level::<a href="#type-loglevel">loglevel()</a>, Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, Level, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_stat-1">re_stat/1</a></h3>
+<div class="spec">
+<p><tt>re_stat(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, stat, Value)</tt></a>.</p>
+
+
+<h3 class="function"><a name="re_warn-1">re_warn/1</a></h3>
+<div class="spec">
+<p><tt>re_warn(Value::atom()) -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-3"><tt>level(re, warn, Value)</tt></a>.</p>
+
 
 <h3 class="function"><a name="start-0">start/0</a></h3>
 <div class="spec">
 <p><tt>start() -&gt; ok</tt><br></p>
 </div><p> Starts the application</p>
+
+<h3 class="function"><a name="stat-0">stat/0</a></h3>
+<div class="spec">
+<p><tt>stat() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(stat)</tt></a>.</p>
+
+
+<h3 class="function"><a name="warn-0">warn/0</a></h3>
+<div class="spec">
+<p><tt>warn() -&gt; ok</tt><br></p>
+</div><p>Equivalent to <a href="#level-1"><tt>level(warn)</tt></a>.</p>
+
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
-<p><i>Generated by EDoc, Mar 21 2011, 12:54:57.</i></p>
+<p><i>Generated by EDoc, Apr 18 2011, 15:38:05.</i></p>
 </body>
 </html>
