@@ -4,12 +4,8 @@
 %%% @doc Mixed {@link elogger}. Let's you use many {@link elogger}s at the same time
 %%% ==Usage==
 %%%       To use it in elog <a href="overview-summary.html#configuration">config files</a> you need to set 
-%%%       the corresponding <i>logger</i> env variable to: <code>{elogger_mix, [Option]}</code><br/>
-%%%       (where <code>Option :: {Name::atom(), Value::term()}</code>). Availabe options include:
-%%% <dl>
-%%%   <dt><b>loggers</b> :: [{Name::atom(), InitArgs::term()}]</dt>
-%%%     <dd>Loggers to use</dd>
-%%% </dl>
+%%%       the corresponding <i>logger</i> env variable to: <code>{elogger_mix, Loggers}</code><br/>
+%%%       (where <code>Loggers :: [{@link logger()}]</code>).
 %%% @end
 %%%-------------------------------------------------------------------
 -module(elogger_mix).
@@ -19,15 +15,18 @@
 
 -include("elog.hrl").
 
+-type filter() :: {cat | mod, atom()} | {re, string()}.
+-type logger() :: {atom(), term()} | {atom(), term(), filter()}.
+-export_type([logger/0, filter/0]).
+
 -export([init/1, log/2, handle_info/2, terminate/2]).
 
--record(state, {loggers :: [{atom(), term()}]}).
+-record(state, {loggers :: [logger()]}).
 -opaque state() :: #state{}.
 
 %%% @hidden
--spec init([proplists:property()]) -> {ok, state()} | {stop, no_loggers}.
-init(Props) ->
-  Loggers = proplists:get_value(loggers, Props, []),
+-spec init([logger()]) -> {ok, state()} | {stop, no_loggers}.
+init(Loggers) ->
   InitializedLoggers =
     lists:reverse(
       lists:foldl(
@@ -38,6 +37,27 @@ init(Props) ->
                   {stop, ModReason} -> throw({stop, {Mod, ModReason}})
                 catch
                   _:{ok, ModSt} -> [{Mod, ModSt} | Acc];
+                  _:ignore -> Acc;
+                  _:{stop, ModReason} -> throw({stop, {Mod, ModReason}})
+                end;
+           ({Mod, InitArgs, {re, RegExpStr}}, Acc) ->
+                {ok, RegExp} = re:compile(RegExpStr),
+                try Mod:init(InitArgs) of
+                  {ok, ModSt} -> [{Mod, ModSt, {re, RegExp}} | Acc];
+                  ignore -> Acc;
+                  {stop, ModReason} -> throw({stop, {Mod, ModReason}})
+                catch
+                  _:{ok, ModSt} -> [{Mod, ModSt, {re, RegExp}} | Acc];
+                  _:ignore -> Acc;
+                  _:{stop, ModReason} -> throw({stop, {Mod, ModReason}})
+                end;
+           ({Mod, InitArgs, Filter}, Acc) ->
+                try Mod:init(InitArgs) of
+                  {ok, ModSt} -> [{Mod, ModSt, Filter} | Acc];
+                  ignore -> Acc;
+                  {stop, ModReason} -> throw({stop, {Mod, ModReason}})
+                catch
+                  _:{ok, ModSt} -> [{Mod, ModSt, Filter} | Acc];
                   _:ignore -> Acc;
                   _:{stop, ModReason} -> throw({stop, {Mod, ModReason}})
                 end
@@ -55,7 +75,32 @@ log(Log, State = #state{loggers  = Loggers}) ->
   NewLoggers =
     lists:map(fun({Mod, ModSt}) ->
                       {ok, NewModSt} = Mod:log(Log, ModSt),
-                      {Mod, NewModSt}
+                      {Mod, NewModSt};
+                 ({Mod, ModSt, {cat, Cat}}) ->
+                      case Log#log.category of
+                        Cat ->
+                          {ok, NewModSt} = Mod:log(Log, ModSt),
+                          {Mod, NewModSt};
+                        _ ->
+                          {Mod, ModSt}
+                      end;
+                 ({Mod, ModSt, {mod, XMod}}) ->
+                      case Log#log.module of
+                        XMod ->
+                          {ok, NewModSt} = Mod:log(Log, ModSt),
+                          {Mod, NewModSt};
+                        _ ->
+                          {Mod, ModSt}
+                      end;
+                 ({Mod, ModSt, {re, RegExp}}) ->
+                      case re:run(io_lib:format(Log#log.text, Log#log.args),
+                                  RegExp, [{capture, none}]) of
+                        match ->
+                          {ok, NewModSt} = Mod:log(Log, ModSt),
+                          {Mod, NewModSt};
+                        _ ->
+                          {Mod, ModSt}
+                      end
               end, Loggers),
   {ok, State#state{loggers = NewLoggers}}.
 
@@ -65,7 +110,10 @@ handle_info(Info, State = #state{loggers = Loggers}) ->
   NewLoggers =
     lists:map(fun({Mod, ModSt}) ->
                       {ok, NewModSt} = Mod:handle_info(Info, ModSt),
-                      {Mod, NewModSt}
+                      {Mod, NewModSt};
+                 ({Mod, ModSt, Filter}) ->
+                      {ok, NewModSt} = Mod:handle_info(Info, ModSt),
+                      {Mod, NewModSt, Filter}
               end, Loggers),
   {ok, State#state{loggers = NewLoggers}}.
 
