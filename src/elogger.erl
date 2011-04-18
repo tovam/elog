@@ -110,12 +110,12 @@ start_link(Level, What, Mod, InitArgs) ->
 %% @hidden
 -spec add(elog:loglevel(), exception_class(), atom()|string()) -> ok.
 add(Level, Class, Value) ->
-  gen_server:call(process_name(Level), {add, Class,  Value}, infinity).
+  gen_server:call(process_name(Level), {add, Class, Value}, infinity).
 
 %% @hidden
 -spec remove(elog:loglevel(), exception_class(), atom()|string()) -> ok.
 remove(Level, Class, Value) ->
-  gen_server:call(process_name(Level), {remove, Class,  Value}, infinity).
+  gen_server:call(process_name(Level), {remove, Class, Value}, infinity).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GEN SERVER CALLBACKS
