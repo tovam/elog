@@ -8,7 +8,7 @@ build_plt: all
 	rebar skip_deps=true build-plt
 
 analyze: all
-	rebar dialyze
+	rebar skip_deps=true dialyze
 
 update-deps:
 	rebar update-deps

@@ -64,7 +64,7 @@ mod_level(Level, Value) -> level(mod, Level, Value).
 cat_level(Level, Value) -> level(cat, Level, Value).
 
 %%% @equiv level(re, Level, Value)
--spec re_level(loglevel(), atom()) -> ok.
+-spec re_level(loglevel(), string()) -> ok.
 re_level(Level, Value) -> level(re, Level, Value).
 
 %% @equiv level(debug)
@@ -78,7 +78,7 @@ mod_debug(Value) -> level(mod, ?LOG_LEVEL_DEBUG, Value).
 -spec cat_debug(atom()) -> ok.
 cat_debug(Value) -> level(cat, ?LOG_LEVEL_DEBUG, Value).
 %%% @equiv level(re, debug, Value)
--spec re_debug(atom()) -> ok.
+-spec re_debug(string()) -> ok.
 re_debug(Value) -> level(re, ?LOG_LEVEL_DEBUG, Value).
 
 %% @equiv level(info)
@@ -92,7 +92,7 @@ mod_info(Value) -> level(mod, ?LOG_LEVEL_INFO, Value).
 -spec cat_info(atom()) -> ok.
 cat_info(Value) -> level(cat, ?LOG_LEVEL_INFO, Value).
 %%% @equiv level(re, info, Value)
--spec re_info(atom()) -> ok.
+-spec re_info(string()) -> ok.
 re_info(Value) -> level(re, ?LOG_LEVEL_INFO, Value).
 
 %% @equiv level(stat)
@@ -106,7 +106,7 @@ mod_stat(Value) -> level(mod, ?LOG_LEVEL_STAT, Value).
 -spec cat_stat(atom()) -> ok.
 cat_stat(Value) -> level(cat, ?LOG_LEVEL_STAT, Value).
 %%% @equiv level(re, stat, Value)
--spec re_stat(atom()) -> ok.
+-spec re_stat(string()) -> ok.
 re_stat(Value) -> level(re, ?LOG_LEVEL_STAT, Value).
 
 %% @equiv level(warn)
@@ -120,7 +120,7 @@ mod_warn(Value) -> level(mod, ?LOG_LEVEL_WARN, Value).
 -spec cat_warn(atom()) -> ok.
 cat_warn(Value) -> level(cat, ?LOG_LEVEL_WARN, Value).
 %%% @equiv level(re, warn, Value)
--spec re_warn(atom()) -> ok.
+-spec re_warn(string()) -> ok.
 re_warn(Value) -> level(re, ?LOG_LEVEL_WARN, Value).
 
 %% @equiv level(error)
@@ -134,7 +134,7 @@ mod_error(Value) -> level(mod, ?LOG_LEVEL_ERROR, Value).
 -spec cat_error(atom()) -> ok.
 cat_error(Value) -> level(cat, ?LOG_LEVEL_ERROR, Value).
 %%% @equiv level(re, error, Value)
--spec re_error(atom()) -> ok.
+-spec re_error(string()) -> ok.
 re_error(Value) -> level(re, ?LOG_LEVEL_ERROR, Value).
 
 %% @equiv level(fatal)
@@ -148,7 +148,7 @@ mod_fatal(Value) -> level(mod, ?LOG_LEVEL_FATAL, Value).
 -spec cat_fatal(atom()) -> ok.
 cat_fatal(Value) -> level(cat, ?LOG_LEVEL_FATAL, Value).
 %%% @equiv level(re, fatal, Value)
--spec re_fatal(atom()) -> ok.
+-spec re_fatal(string()) -> ok.
 re_fatal(Value) -> level(re, ?LOG_LEVEL_FATAL, Value).
 
 %%% @doc  Sets the log level for a particular module, category or regular expression
