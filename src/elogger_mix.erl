@@ -5,7 +5,7 @@
 %%% ==Usage==
 %%%       To use it in elog <a href="overview-summary.html#configuration">config files</a> you need to set 
 %%%       the corresponding <i>logger</i> env variable to: <code>{elogger_mix, Loggers}</code><br/>
-%%%       (where <code>Loggers :: [{@link logger()}]</code>).
+%%%       (where <code>Loggers :: [default_logger | {default_logger, {@link filter()}} | {@link logger()}]</code>).
 %%% @end
 %%%-------------------------------------------------------------------
 -module(elogger_mix).
@@ -61,7 +61,7 @@ init(Loggers) ->
                   _:ignore -> Acc;
                   _:{stop, ModReason} -> throw({stop, {Mod, ModReason}})
                 end
-        end, [], Loggers)),
+        end, [], expand_defaults(Loggers))),
   case InitializedLoggers of
     [] ->
       {stop, no_loggers};
@@ -120,3 +120,13 @@ handle_info(Info, State = #state{loggers = Loggers}) ->
 %%% @hidden
 -spec terminate(normal | shutdown | term(), state()) -> ok.
 terminate(_Reason, _State) -> ok.
+
+expand_defaults(Loggers) ->
+  {Mod, Args} = elog:get_env(logger),
+  lists:map(fun(default_logger) ->
+                    {Mod, Args};
+               ({default_logger, Filter}) ->
+                    {Mod, Args, Filter};
+               (Other) ->
+                    Other
+            end, Loggers).
