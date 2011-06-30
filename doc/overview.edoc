@@ -56,7 +56,7 @@ It was tested on a very log-intensive application running on a server with 128K 
           <dd>Logger: {@link elogger} implementation to be used for this level</dd>
       </dl>
     </dd>
-</dl>
+</dl>                                
 
 == Performance Notice ==
 Note that when you decide to set the log level for a module or category, every other module compiled
