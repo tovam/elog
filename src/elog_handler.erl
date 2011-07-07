@@ -21,16 +21,17 @@
 %% ====================================================================
 %% External functions
 %% ====================================================================
-%% @doc  replaces the default tty error logger
+%% @equiv replace_tty([])
 -spec replace_tty() -> ok.
 replace_tty() ->
-  case error_logger:delete_report_handler(error_logger) of
-    {error, module_not_found} -> %% Already replaced by sasl or riak_err
-      error_logger:add_report_handler(?MODULE, [ignore_sasl]);
-    {error_logger, []} ->
-      error_logger:delete_report_handler(error_logger_tty_h),
-      error_logger:add_report_handler(?MODULE, [])
-  end.
+  replace_tty([]).
+
+%% @doc  replaces the default tty error logger
+-spec replace_tty([ignore_sasl]) -> ok.
+replace_tty(Options) ->
+  error_logger:delete_report_handler(error_logger),
+  error_logger:delete_report_handler(error_logger_tty_h),
+  error_logger:add_report_handler(?MODULE, Options).
 
 %% ====================================================================
 %% Server functions
