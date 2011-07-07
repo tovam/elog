@@ -106,6 +106,12 @@ handle_event({warning_report, _GLeader, {_Pid, Type, Report}}, State) ->
 handle_event({info_msg, _GLeader, {_Pid, Text, Args}}, State) ->
   ?INFO(Text, Args),
   {ok, State};
+handle_event({info_report, _GLeader, {_Pid, progress, [Int|_] = Report}}, State) when is_integer(Int) ->
+  ?DEBUG("~s~n", [Report]),
+  {ok, State};
+handle_event({info_report, _GLeader, {_Pid, progress, Report}}, State) ->
+  ?DEBUG("~n\t~p~n", [Report]),
+  {ok, State};
 handle_event({info_report, _GLeader, {_Pid, Type, [Int|_] = Report}}, State) when is_integer(Int) ->
   ?INFO("~s:~n\t~s~n", [Type, Report]),
   {ok, State};
