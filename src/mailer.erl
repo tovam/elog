@@ -40,7 +40,7 @@ send_message({Host, Port}, {SrcName, SrcAddr, SrcPwd}, Recipients, Subject, Body
     io:format("Mail sent from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients])
   catch
     _:Error ->
-      io:format("Could not send from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients]),
+      io:format("Could not send from ~s <~s> to ~p~n\tError: ~p~n", [SrcName, SrcAddr, Recipients, Error]),
       ok
   end.
 
