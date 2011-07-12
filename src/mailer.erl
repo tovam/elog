@@ -17,26 +17,32 @@ send(Server, Source, Recipients, Subject, Body) ->
 
 send_message(_Server, _Source, [], _Subject, _Body) -> ok;
 send_message({Host, Port}, {SrcName, SrcAddr, SrcPwd}, Recipients, Subject, Body) ->
-  {ok, Socket} = ssl:connect(Host, Port, [{ssl_imp, old},{active, false}], 60000),
-  ok = recv(Socket),
-  ok = send(Socket, "HELO localhost"),
-  ok = send(Socket, "AUTH LOGIN"),
-  ok = send(Socket, binary_to_list(base64:encode(SrcAddr))),
-  ok = send(Socket, binary_to_list(base64:encode(SrcPwd))),
-  ok = send(Socket, ["MAIL FROM:<", SrcAddr, ">"]),
-  lists:foreach(fun(Rcpt) -> ok = send(Socket, ["RCPT TO:", $<, Rcpt, $>]) end, Recipients),
-  ok = send(Socket, "DATA"),
-  ok = send_no_recv(Socket, ["From: ", SrcName, $<, SrcAddr, $>]),
-  ok = send_no_recv(Socket, ["Date: ", httpd_util:rfc1123_date()]),
-  ok = send_no_recv(Socket, ["Subject: " | Subject]),
-  ok = send_no_recv(Socket, "Content-type: text/plain"),
-  ok = send_no_recv(Socket, ""),
-  ok = send_no_recv(Socket, Body),
-  ok = send_no_recv(Socket, ""),
-  ok = send(Socket, "."),
-  ok = send(Socket, "QUIT"),
-  ssl:close(Socket),
-  io:format("Mail sent from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients]).
+  try
+    {ok, Socket} = ssl:connect(Host, Port, [{ssl_imp, old},{active, false}], 60000),
+    ok = recv(Socket),
+    ok = send(Socket, "HELO localhost"),
+    ok = send(Socket, "AUTH LOGIN"),
+    ok = send(Socket, binary_to_list(base64:encode(SrcAddr))),
+    ok = send(Socket, binary_to_list(base64:encode(SrcPwd))),
+    ok = send(Socket, ["MAIL FROM:<", SrcAddr, ">"]),
+    lists:foreach(fun(Rcpt) -> ok = send(Socket, ["RCPT TO:", $<, Rcpt, $>]) end, Recipients),
+    ok = send(Socket, "DATA"),
+    ok = send_no_recv(Socket, ["From: ", SrcName, $<, SrcAddr, $>]),
+    ok = send_no_recv(Socket, ["Date: ", httpd_util:rfc1123_date()]),
+    ok = send_no_recv(Socket, ["Subject: " | Subject]),
+    ok = send_no_recv(Socket, "Content-type: text/plain"),
+    ok = send_no_recv(Socket, ""),
+    ok = send_no_recv(Socket, Body),
+    ok = send_no_recv(Socket, ""),
+    ok = send(Socket, "."),
+    ok = send(Socket, "QUIT"),
+    ssl:close(Socket),
+    io:format("Mail sent from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients])
+  catch
+    _:Error ->
+      io:format("Could not send from ~s <~s> to ~p~n", [SrcName, SrcAddr, Recipients]),
+      ok
+  end.
 
 send_no_recv(Socket, Data) ->
   %io:format([$> | Data] ++ [13,10]),
@@ -51,9 +57,7 @@ send(Socket, Data) ->
 recv(Socket) ->
   case ssl:recv(Socket, 0, 30000) of
     {ok, _Return} ->
-      %io:format([$< | _Return]),
       ok;
     {error, Reason} ->
-      error_logger:error_msg("~p:~p > ~p~n", [?MODULE, ?LINE, Reason]),
       {error, Reason}
   end.
