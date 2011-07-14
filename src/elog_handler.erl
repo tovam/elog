@@ -80,8 +80,17 @@ handle_event(Event = {warning_report, _GL, _Report}, State = #state{sasl = ignor
 handle_event(_Event, State = #state{sasl = ignore}) ->
   {ok, State};
 handle_event({error, _GLeader, {_Pid, Text, Args}}, State) ->
-  ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
-  {ok, State};
+  try string:str(Text, "{undef,[{ssl_session_cache,delete,") of
+    0 ->
+      ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
+      {ok, State};
+    _ ->
+      %%XXX: A bug in ssl raises this errors, nothing to worry about really
+      {ok, State}
+  catch
+    _:_ ->
+      ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, [])
+  end;
 handle_event({error_report, _GLeader, {_Pid, Type, [Int|_] = Report}}, State) when is_integer(Int) ->
   ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, "~s:~n\t~s~n", [Type, Report], []),
   {ok, State};
