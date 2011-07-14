@@ -80,12 +80,14 @@ handle_event(Event = {warning_report, _GL, _Report}, State = #state{sasl = ignor
 handle_event(_Event, State = #state{sasl = ignore}) ->
   {ok, State};
 handle_event({error, _GLeader, {_Pid, Text, Args}}, State) ->
-  try string:str(Text, "{undef,[{ssl_session_cache,delete,") of
+  try {string:str(Text, "{undef,[{ssl_session_cache,delete,"),
+       string:str(Text, "module: misultin_socket")} of
     0 ->
       ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
       {ok, State};
     _ ->
       %%XXX: A bug in ssl raises this errors, nothing to worry about really
+      %%XXX: When misultin sockets are brutally closed by client, they report an error... again nothing to worry about really
       {ok, State}
   catch
     _:_ ->
