@@ -80,9 +80,12 @@ handle_event(Event = {warning_report, _GL, _Report}, State = #state{sasl = ignor
 handle_event(_Event, State = #state{sasl = ignore}) ->
   {ok, State};
 handle_event({error, _GLeader, {_Pid, Text, Args}}, State) ->
-  try {string:str(Text, "{undef,[{ssl_session_cache,delete,"),
-       string:str(Text, "module: misultin_socket")} of
-    {0, 0} ->
+  try begin
+        Formatted = iolist_to_binary(io_lib:format(Text, Args)),
+        {binary:match(Formatted, <<"{undef,[{ssl_session_cache,delete,">>),
+         binary:match(Formatted, <<"module: misultin_socket">>)}
+      end of
+    {nomatch, nomatch} ->
       ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
       {ok, State};
     _ ->
