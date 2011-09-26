@@ -82,7 +82,7 @@ handle_event(_Event, State = #state{sasl = ignore}) ->
 handle_event({error, _GLeader, {_Pid, Text, Args}}, State) ->
   try {string:str(Text, "{undef,[{ssl_session_cache,delete,"),
        string:str(Text, "module: misultin_socket")} of
-    0 ->
+    {0, 0} ->
       ?LOG('elogger-error', ?LOG_LEVEL_ERROR, ?MODULE, Text, Args, []),
       {ok, State};
     _ ->
