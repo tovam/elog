@@ -18,5 +18,5 @@
           		<<"module: misultin_socket">>,
           		<<"{badarith,[{ssl_session,valid_session,">>  
   		 		]}
-        ]},
+        ]}
  ]}.
