@@ -12,6 +12,11 @@
                  ]},
   {mod, {elog, []}},
   {env, [{level, info},
-         {logger, {elogger_console, []}}
-        ]}
+         {logger, {elogger_console, []}},
+         {skip, [ 
+          		<<"{undef,[{ssl_session_cache,delete,">>,
+          		<<"module: misultin_socket">>,
+          		<<"{badarith,[{ssl_session,valid_session,">>  
+  		 		]}
+        ]},
  ]}.
