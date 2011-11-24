@@ -5,10 +5,7 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib,
-                  inets,
-                  crypto,
-                  ssl
+                  stdlib
                  ]},
   {mod, {elog, []}},
   {env, [{level, info},
