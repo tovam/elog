@@ -2,7 +2,7 @@
 @author Fernando Benavides <greenmellon@gmail.com>
 @copyright 2010 Fernando Benavides <greenmellon@gmail.com>
 @version 2.0
-@reference Check the project on <a href="https://github.com/elbrujohalcon/elog">Github</a>
+@reference Check the project on <a href="https://github.com/inaka/elog">Github</a>
 @title Yet another logging library for Erlang
 @doc
 == Overview ==
